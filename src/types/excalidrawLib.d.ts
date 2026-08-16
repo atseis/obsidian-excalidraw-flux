@@ -256,6 +256,12 @@ declare namespace ExcalidrawLib {
   function getDataURL(file: Blob | File): Promise<DataURL>;
   function destroyObsidianUtils(): void;
   function registerLocalFont(fontMetrics: FontMetadata, uri: string): void;
+  function registerCustomFont(
+    family: string,
+    familyId: number,
+    fontMetrics: FontMetadata,
+    uri: string,
+  ): number;
   function getFontFamilies(): string[];
   function registerFontsInCSS(): Promise<void>;
   function getCSSFontDefinition(fontFamily: number): Promise<string>;

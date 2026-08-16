@@ -19,6 +19,22 @@ declare const deliberateCreateElement: (
 
 type PackageMapProvider = () => Map<Window, Packages>;
 
+const VAULT_FONT_EXTENSIONS = new Set(["otf", "ttf", "woff", "woff2"]);
+const CUSTOM_FONT_ID_OFFSET = 10_000;
+
+const getStableCustomFontId = (family: string): number => {
+  // FNV-1a keeps the serialized numeric id stable across vaults and machines.
+  let hash = 0x811c9dc5;
+  for (const character of family.normalize("NFC").toLocaleLowerCase()) {
+    hash ^= character.codePointAt(0) ?? 0;
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return CUSTOM_FONT_ID_OFFSET + (hash >>> 0);
+};
+
+const quoteCSSFontFamily = (family: string): string =>
+  `"${family.replaceAll("\\", "\\\\").replaceAll('"', '\\"')}"`;
+
 /**
  * Owns CJK and custom-font discovery, registration, document stylesheets, and
  * readiness state while preserving the plugin's existing public font facade.
@@ -98,6 +114,7 @@ export class FontManager {
       new Notice(t("FONTS_LOADED"));
     }
 
+    const customFontDeclarations = await this.initializeMultiFonts();
     const font = await getFontDataURL(
       this.plugin.app,
       this.plugin.settings.experimantalFourthFont,
@@ -107,43 +124,38 @@ export class FontManager {
 
     if (font.dataURL === "") {
       this.plugin.fourthFontLoaded = true;
-      return;
-    }
+    } else {
+      const fourthFontDataURL = font.dataURL;
+      const file = this.plugin.app.metadataCache.getFirstLinkpathDest(
+        this.plugin.settings.experimantalFourthFont,
+        "",
+      );
+      let fontMetrics =
+        !file || file.extension.startsWith("woff") || !font.arrayBuffer
+          ? undefined
+          : getFontMetrics(font.arrayBuffer);
 
-    const fourthFontDataURL = font.dataURL;
-
-    const file = this.plugin.app.metadataCache.getFirstLinkpathDest(
-      this.plugin.settings.experimantalFourthFont,
-      "",
-    );
-    let fontMetrics = file.extension.startsWith("woff") || !font.arrayBuffer
-      ? undefined
-      : getFontMetrics(font.arrayBuffer);
-
-    if (!fontMetrics) {
-      fontMetrics = {
-        unitsPerEm: 1000,
-        ascender: 750,
-        descender: -250,
-        lineHeight: 1.2,
-      };
-    }
-    this.getPackageMap().forEach(({ excalidrawLib }) => {
       if (!fontMetrics) {
-        return;
+        fontMetrics = {
+          unitsPerEm: 1000,
+          ascender: 750,
+          descender: -250,
+          lineHeight: 1.2,
+        };
       }
-      excalidrawLib.registerLocalFont(
-        { metrics: fontMetrics },
-        fourthFontDataURL,
+      this.getPackageMap().forEach(({ excalidrawLib }) => {
+        excalidrawLib?.registerLocalFont(
+          { metrics: fontMetrics },
+          fourthFontDataURL,
+        );
+      });
+      customFontDeclarations.push(
+        `@font-face{font-family:'Local Font';src:url("${fourthFontDataURL}");font-display:swap;font-weight:400;}`,
       );
-    });
+    }
+
     for (const ownerDocument of this.getOpenObsidianDocuments()) {
-      await this.addFonts(
-        [
-          `@font-face{font-family:'Local Font';src:url("${fourthFontDataURL}");font-display: swap;font-weight: 400;`,
-        ],
-        ownerDocument,
-      );
+      await this.addFonts(customFontDeclarations, ownerDocument);
     }
     if (!this.plugin.fourthFontLoaded) {
       window.setTimeout(() => {
@@ -151,6 +163,74 @@ export class FontManager {
       }, 100);
     }
     this.fontsReady = true;
+  }
+
+  /** Registers every supported font directly below the YMJR multi-font folder. */
+  private async initializeMultiFonts(): Promise<string[]> {
+    const configuredFolder = this.plugin.settings.multiFontsFolder?.trim();
+    if (!configuredFolder) {
+      return [];
+    }
+
+    const folder = normalizePath(configuredFolder);
+    const prefix = folder.endsWith("/") ? folder : `${folder}/`;
+    const fontFiles = this.plugin.app.vault
+      .getFiles()
+      .filter(
+        (file) =>
+          file.path.startsWith(prefix) &&
+          !file.path.slice(prefix.length).includes("/") &&
+          VAULT_FONT_EXTENSIONS.has(file.extension.toLocaleLowerCase()),
+      )
+      .sort((left, right) => left.path.localeCompare(right.path));
+
+    const declarations: string[] = [];
+    const claimedIds = new Map<number, string>();
+    const claimedFamilies = new Set<string>();
+    for (const file of fontFiles) {
+      const family = file.basename.normalize("NFC").trim();
+      if (!family || claimedFamilies.has(family)) {
+        console.warn(`Skipped duplicate Excalidraw vault font: ${file.path}`);
+        continue;
+      }
+
+      let familyId = getStableCustomFontId(family);
+      while (claimedIds.has(familyId) && claimedIds.get(familyId) !== family) {
+        familyId += 1;
+      }
+      claimedIds.set(familyId, family);
+      claimedFamilies.add(family);
+
+      const font = await getFontDataURL(this.plugin.app, file.path, "", family);
+      if (!font.dataURL) {
+        console.warn(`Unable to load Excalidraw vault font: ${file.path}`);
+        continue;
+      }
+
+      const parsedMetrics =
+        file.extension.toLocaleLowerCase().startsWith("woff") ||
+        !font.arrayBuffer
+          ? null
+          : getFontMetrics(font.arrayBuffer);
+      const metrics = parsedMetrics ?? {
+        unitsPerEm: 1000 as const,
+        ascender: 750,
+        descender: -250,
+        lineHeight: 1.2,
+      };
+      this.getPackageMap().forEach(({ excalidrawLib }) => {
+        excalidrawLib?.registerCustomFont(
+          family,
+          familyId,
+          { metrics },
+          font.dataURL,
+        );
+      });
+      declarations.push(
+        `@font-face{font-family:${quoteCSSFontFamily(family)};src:url("${font.dataURL}");font-display:swap;font-weight:400;}`,
+      );
+    }
+    return declarations;
   }
 
   /** Replaces a plugin-owned font stylesheet and waits for the font to load. */

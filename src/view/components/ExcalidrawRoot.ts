@@ -186,6 +186,13 @@ export function createExcalidrawRootElement(
           autoFocus: true,
           langCode: obsidianToExcalidrawMap[view.plugin.locale] ?? "en-EN",
           aiEnabled: view.plugin.settings.aiEnabled ?? true,
+          ...({
+            // These host-extension props are supplied by the local open Core.
+            // Keep them in a spread until the published package declarations
+            // catch up with the local source build used by this plugin.
+            toolShortcutPreferences:
+              view.plugin.settings.toolShortcutPreferences,
+          } as Record<string, unknown>),
           onChange: (et, st, files) =>
             view.onChange(et as ExcalidrawElement[], st, files),
           onIncrement: (event) => view.onExcalidrawIncrement(event),

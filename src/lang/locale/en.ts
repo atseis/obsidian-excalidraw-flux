@@ -712,6 +712,20 @@ export default {
   DISPLAY_HEAD: "Excalidraw appearance and behavior",
   DISPLAY_DESC:
     "In the 'appearance and behavior' section of Excalidraw Settings, you can fine-tune how Excalidraw appears and behaves. This includes options for dynamic styling, left-handed mode, matching Excalidraw and Obsidian themes, default modes, and more.",
+  TOOL_SHORTCUTS_HEAD: "Tool shortcut aliases",
+  TOOL_SHORTCUTS_DESC:
+    "Choose whether each tool responds to its digit and letter alias. L opens the line-style selector: ls = solid, ld = dashed, lt = dotted, and la immediately animates selected dashed/dotted lines. A opens the Arrowhead selector using the native picker letters: a plus a lowercase letter changes the end, while a plus Shift+letter changes the start. Examples: aq = none, aw = arrow, ab = block arrow, and an = block arrow outline.",
+  TOOL_SHORTCUTS_DIGIT: "Digit",
+  TOOL_SHORTCUTS_LETTER: "Letter",
+  TOOL_SHORTCUTS_ERASER: "Eraser",
+  TOOL_SHORTCUTS_SELECTION: "Selection",
+  TOOL_SHORTCUTS_RECTANGLE: "Rectangle",
+  TOOL_SHORTCUTS_DIAMOND: "Diamond",
+  TOOL_SHORTCUTS_ELLIPSE: "Ellipse",
+  TOOL_SHORTCUTS_ARROW: "Arrow",
+  TOOL_SHORTCUTS_LINE: "Line",
+  TOOL_SHORTCUTS_FREEDRAW: "Freedraw",
+  TOOL_SHORTCUTS_TEXT: "Text",
   OVERRIDE_OBSIDIAN_FONT_SIZE_NAME: "Limit Obsidian Font Size to Editor Text",
   OVERRIDE_OBSIDIAN_FONT_SIZE_DESC:
     "Obsidian's custom font size setting affects the entire interface, including Excalidraw and themes that depend on the default font size. " +
@@ -1275,6 +1289,10 @@ export default {
     "If no file is selected, Excalidraw will default to the Virgil font. " +
     "For optimal performance, it is recommended to use a .woff2 file, as Excalidraw will encode only the necessary glyphs when exporting images to SVG. " +
     "Other font formats will embed the entire font in the exported file, potentially resulting in significantly larger file sizes.",
+  MULTI_FONTS_FOLDER_NAME: "Additional local fonts folder",
+  MULTI_FONTS_FOLDER_DESC:
+    "Excalidraw Flux folder containing .otf, .ttf, .woff, or .woff2 files. Fonts directly inside this folder are registered individually and appear in Excalidraw's font picker. Existing drawings use stable numeric font IDs so they remain portable when the same font files are installed in another vault.",
+  MULTI_FONTS_FOLDER_PLACEHOLDER: "e.g.: plugins/Excalidraw/Fonts",
   OFFLINE_CJK_NAME: "Offline CJK font support",
   OFFLINE_CJK_DESC: `<strong>Changes you make here will only take effect after restarting Obsidian.</strong><br>
      Excalidraw.com offers handwritten CJK fonts. By default these fonts are not included in the plugin locally, but are served from the Internet. 

@@ -641,6 +641,20 @@ export default {
   DISPLAY_HEAD: "界面 & 行为",
   DISPLAY_DESC:
     "包括：左手模式、动态样式、匹配 Excalidraw 和 Obsidian 主题、默认运行模式等。",
+  TOOL_SHORTCUTS_HEAD: "工具快捷键别名",
+  TOOL_SHORTCUTS_DESC:
+    "分别控制各工具的数字键和字母键。L 作为线条样式入口：ls = 实线，ld = 虚线，lt = 点线，la = 直接将已选的虚线或点线转为动态线条。A 作为 Arrowhead 端点样式入口，第二键沿用原生 Arrowhead 选择器中的字母：普通小写字母修改终点，Shift+字母修改起点。例如 aq = 无，aw = 普通箭头，ab = Block arrow，an = Block arrow outline。",
+  TOOL_SHORTCUTS_DIGIT: "数字",
+  TOOL_SHORTCUTS_LETTER: "字母",
+  TOOL_SHORTCUTS_ERASER: "橡皮擦",
+  TOOL_SHORTCUTS_SELECTION: "选择",
+  TOOL_SHORTCUTS_RECTANGLE: "矩形",
+  TOOL_SHORTCUTS_DIAMOND: "菱形",
+  TOOL_SHORTCUTS_ELLIPSE: "椭圆",
+  TOOL_SHORTCUTS_ARROW: "箭头",
+  TOOL_SHORTCUTS_LINE: "线条",
+  TOOL_SHORTCUTS_FREEDRAW: "自由绘制",
+  TOOL_SHORTCUTS_TEXT: "文本",
   OVERRIDE_OBSIDIAN_FONT_SIZE_NAME: "限制 Obsidian 字体大小为编辑器文本",
   OVERRIDE_OBSIDIAN_FONT_SIZE_DESC:
     "Obsidian 的自定义字体大小设置会影响整个界面，包括 Excalidraw 和依赖默认字体大小的主题。" +
@@ -1186,6 +1200,10 @@ export default {
     "Excalidraw 默认使用 Virgil 字体。" +
     "为了获得最佳性能，建议使用 .woff2 文件，因为当导出 SVG 格式的图片时，Excalidraw 只会编码必要的字形。" +
     `其他字体格式将在导出文件中嵌入整个字体，可能会导致文件大小显著增加。<b>译者注：</b>可在 <a href="${URLs.WANGCHUJIANG_COM_FREE_FONT}" target='_blank'>Free Font</a> 获取免费商用中文手写字体。`,
+  MULTI_FONTS_FOLDER_NAME: "附加本地字体文件夹",
+  MULTI_FONTS_FOLDER_DESC:
+    "Excalidraw Flux 的附加字体目录。该目录直属层级中的 .otf/.ttf/.woff/.woff2 文件会分别注册并出现在 Excalidraw 字体选择器中；同名字体使用稳定的数字 ID，因此在其他仓库安装相同字体后，绘图仍可移植。",
+  MULTI_FONTS_FOLDER_PLACEHOLDER: "例如：plugins/Excalidraw/Fonts",
   OFFLINE_CJK_NAME: "离线 CJK 字体支持",
   OFFLINE_CJK_DESC: `<strong>该项需要重启 Obsidian 才能生效。</strong><br>
     Excalidraw.com 提供手写风格的 CJK 字体。默认情况下，这些字体不会包含在插件本地，而是从互联网获取。

@@ -1,7 +1,9 @@
 import { JSON_parse } from "src/constants/constants";
 import {
   DEFAULT_SETTINGS,
+  DEFAULT_TOOL_SHORTCUT_PREFERENCES,
   type ExcalidrawSettings,
+  type ToolShortcutPreferences,
 } from "src/core/settingsDefaults";
 import { PreviewImageType } from "src/types/utilTypes";
 import {
@@ -42,6 +44,24 @@ export class PluginSettingsManager {
       DEFAULT_SETTINGS,
       decryptedSettings,
     );
+    const persistedToolShortcuts =
+      typeof decryptedSettings.toolShortcutPreferences === "object" &&
+      decryptedSettings.toolShortcutPreferences !== null
+        ? (decryptedSettings.toolShortcutPreferences as Partial<ToolShortcutPreferences>)
+        : {};
+    this.host.settings.toolShortcutPreferences = Object.fromEntries(
+      Object.entries(DEFAULT_TOOL_SHORTCUT_PREFERENCES).map(
+        ([tool, defaults]) => [
+          tool,
+          {
+            ...defaults,
+            ...(persistedToolShortcuts[
+              tool as keyof ToolShortcutPreferences
+            ] ?? {}),
+          },
+        ],
+      ),
+    ) as ToolShortcutPreferences;
     if (typeof decryptedSettings.libraryStorageMode === "undefined") {
       const legacyLibrary: unknown =
         typeof decryptedSettings.library === "string" &&

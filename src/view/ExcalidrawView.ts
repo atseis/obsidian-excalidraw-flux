@@ -2731,6 +2731,9 @@ export default class ExcalidrawView
             await runScript();
           }
         }
+        if (this.plugin.settings.enableOnloadScripts) {
+          await this.plugin.scriptEngine.runLegacyYmjrAutorunScripts(this);
+        }
         this.isLoaded = true;
       });
     })();

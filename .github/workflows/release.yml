@@ -10,6 +10,8 @@ jobs:
   release:
     name: Create Release and Attest Assets
     runs-on: ubuntu-latest
+    env:
+      FLUX_CORE_COMMIT: e3ad867ec85075c259810aa07bd36971f8302d05
 
     # CRITICAL: Give GitHub the required permissions to sign your files
     permissions:
@@ -22,28 +24,60 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
 
+      # Keep the Release tag and the plugin manifest in lockstep. BRAT uses the
+      # Release tag as the authoritative installed version.
+      - name: Verify release version
+        run: |
+          node -e 'const manifest=require("./manifest.json"); if (manifest.version !== process.env.GITHUB_REF_NAME) { throw new Error(`Tag ${process.env.GITHUB_REF_NAME} does not match manifest ${manifest.version}`); }'
+
       # 2. Tell the server to install Node 22
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
           node-version: '22'
 
-      # 3. Install dependencies and build assets
-      # This naturally generates dist/manifest.json from the stable one
-      - name: Install dependencies and build
-        run: |
-          npm ci
-          npm run build 
+      # 3. Install plugin dependencies from the lockfile. The published Core
+      # package is only a bootstrap; the pinned open-source Flux Core below
+      # replaces its four Obsidian consumer artifacts before plugin bundling.
+      - name: Install plugin dependencies
+        run: npm ci
 
-      # 4. Check if the tag has a hyphen (e.g. v2.2.5-beta). If yes, mark as pre-release.
+      - name: Build pinned Excalidraw Flux Core
+        run: |
+          core_dir="$RUNNER_TEMP/excalidraw-flux-core"
+          git init "$core_dir"
+          git -C "$core_dir" remote add origin https://github.com/atseis/excalidraw-flux-core.git
+          git -C "$core_dir" fetch --depth 1 origin "$FLUX_CORE_COMMIT"
+          git -C "$core_dir" checkout --detach FETCH_HEAD
+          corepack yarn --cwd "$core_dir" install --frozen-lockfile
+          corepack yarn --cwd "$core_dir/packages/excalidraw" build:obsidian
+
+          core_dist="$core_dir/packages/excalidraw/dist/obsidian"
+          installed_dist="node_modules/@zsviczian/excalidraw/dist/obsidian"
+          for artifact in \
+            excalidraw.production.min.js \
+            excalidraw.production.min.css \
+            excalidraw.development.js \
+            excalidraw.development.css
+          do
+            cp "$core_dist/$artifact" "$installed_dist/$artifact"
+          done
+
+      # This generates dist/manifest.json from the stable manifest and embeds
+      # the freshly built, pinned Flux Core artifacts.
+      - name: Build plugin assets
+        run: npm run build
+
+      # 4. Flux stable versions contain "-flux". Only explicit preview channel
+      # tags are GitHub prereleases, because BRAT excludes prereleases when a
+      # user selects the latest version.
       - name: Determine if Pre-release
         id: check-prerelease
         run: |
-          if [[ "${{ github.ref_name }}" == *"-"* ]]; then
-            echo "is_prerelease=true" >> $GITHUB_OUTPUT
-          else
-            echo "is_prerelease=false" >> $GITHUB_OUTPUT
-          fi
+          case "${{ github.ref_name }}" in
+            *-alpha*|*-beta*|*-rc*) echo "is_prerelease=true" >> "$GITHUB_OUTPUT" ;;
+            *) echo "is_prerelease=false" >> "$GITHUB_OUTPUT" ;;
+          esac
 
       # 5. Swap to the Beta Manifest if it's a pre-release
       - name: Prepare Beta Manifest

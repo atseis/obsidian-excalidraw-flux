@@ -626,6 +626,20 @@ export default {
   DISPLAY_HEAD: "Внешний вид и поведение Excalidraw",
   DISPLAY_DESC:
     "В разделе 'Внешний вид и поведение' раздела Настройки Excalidraw вы можете настроить внешний вид и поведение Excalidraw. Сюда входят опции динамической стилизации, режима для левой руки, соответствия тем Excalidraw и Obsidian, режимов по умолчанию и многое другое.",
+  TOOL_SHORTCUTS_HEAD: "Псевдонимы клавиш инструментов",
+  TOOL_SHORTCUTS_DESC:
+    "Выберите цифровую и буквенную клавиши для каждого инструмента. L открывает выбор линии: ls — сплошная, ld — штриховая, lt — точечная, la — мгновенная анимация выбранной штриховой или точечной линии. A открывает выбор наконечника по буквам нативной панели: вторая строчная буква меняет конечный наконечник, а Shift+буква — начальный. Примеры: aq — нет, aw — стрелка, ab — блочная стрелка, an — контурная блочная стрелка.",
+  TOOL_SHORTCUTS_DIGIT: "Цифра",
+  TOOL_SHORTCUTS_LETTER: "Буква",
+  TOOL_SHORTCUTS_ERASER: "Ластик",
+  TOOL_SHORTCUTS_SELECTION: "Выделение",
+  TOOL_SHORTCUTS_RECTANGLE: "Прямоугольник",
+  TOOL_SHORTCUTS_DIAMOND: "Ромб",
+  TOOL_SHORTCUTS_ELLIPSE: "Эллипс",
+  TOOL_SHORTCUTS_ARROW: "Стрелка",
+  TOOL_SHORTCUTS_LINE: "Линия",
+  TOOL_SHORTCUTS_FREEDRAW: "Свободное рисование",
+  TOOL_SHORTCUTS_TEXT: "Текст",
   DYNAMICSTYLE_NAME: "Динамическая стилизация",
   DYNAMICSTYLE_DESC:
     "Изменение цветов пользовательского интерфейса Excalidraw в соответствии с цветом холста",

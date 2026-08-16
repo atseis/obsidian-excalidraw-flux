@@ -38,8 +38,42 @@ import type {
 
 declare const PLUGIN_VERSION: string;
 
+export type ConfigurableToolShortcutType =
+  | "eraser"
+  | "selection"
+  | "rectangle"
+  | "diamond"
+  | "ellipse"
+  | "arrow"
+  | "line"
+  | "freedraw"
+  | "text";
+
+export type ToolShortcutPreference = {
+  numeric: boolean;
+  letter: boolean;
+};
+
+export type ToolShortcutPreferences = Record<
+  ConfigurableToolShortcutType,
+  ToolShortcutPreference
+>;
+
+export const DEFAULT_TOOL_SHORTCUT_PREFERENCES: ToolShortcutPreferences = {
+  eraser: { numeric: true, letter: false },
+  selection: { numeric: true, letter: false },
+  rectangle: { numeric: true, letter: false },
+  diamond: { numeric: true, letter: false },
+  ellipse: { numeric: true, letter: false },
+  arrow: { numeric: true, letter: false },
+  line: { numeric: true, letter: false },
+  freedraw: { numeric: true, letter: false },
+  text: { numeric: false, letter: true },
+};
+
 export interface ExcalidrawSettings {
   showTabTitlebarButtons: boolean;
+  toolShortcutPreferences: ToolShortcutPreferences;
   copyLinkToElemenetAnchorTo100: boolean;
   copyFrameLinkByName: boolean;
   disableDoubleClickTextEditing: boolean;
@@ -157,6 +191,8 @@ export interface ExcalidrawSettings {
   loadPropertySuggestions: boolean;
   experimentalEnableFourthFont: boolean;
   experimantalFourthFont: string;
+  /** YMJR-compatible vault folder containing selectable local fonts. */
+  multiFontsFolder: string;
   addDummyTextElement: boolean;
   zoteroCompatibility: boolean;
   fieldSuggester: boolean;
@@ -471,6 +507,7 @@ export const cloneModelConfigs = <TConfig extends AIModelConfig>(
 
 export const DEFAULT_SETTINGS: ExcalidrawSettings = {
   showTabTitlebarButtons: true,
+  toolShortcutPreferences: DEFAULT_TOOL_SHORTCUT_PREFERENCES,
   copyLinkToElemenetAnchorTo100: false,
   copyFrameLinkByName: false,
   disableDoubleClickTextEditing: false,
@@ -584,6 +621,7 @@ export const DEFAULT_SETTINGS: ExcalidrawSettings = {
   loadPropertySuggestions: false,
   experimentalEnableFourthFont: false,
   experimantalFourthFont: "Virgil",
+  multiFontsFolder: "",
   addDummyTextElement: false,
   zoteroCompatibility: false,
   fieldSuggester: true,

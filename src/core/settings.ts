@@ -1691,6 +1691,107 @@ export class ExcalidrawSettingTab extends PluginSettingTab {
 
     detailsEl = displayDetailsEl.createEl("details");
     detailsEl.createEl("summary", {
+      text: t("TOOL_SHORTCUTS_HEAD"),
+      cls: "excalidraw-setting-h3",
+    });
+    detailsEl.createDiv({
+      text: t("TOOL_SHORTCUTS_DESC"),
+      cls: "setting-item-description",
+    });
+
+    const toolShortcutRows = [
+      {
+        type: "eraser" as const,
+        label: t("TOOL_SHORTCUTS_ERASER"),
+        digit: "0",
+        letter: "E",
+      },
+      {
+        type: "selection" as const,
+        label: t("TOOL_SHORTCUTS_SELECTION"),
+        digit: "1",
+        letter: "V",
+      },
+      {
+        type: "rectangle" as const,
+        label: t("TOOL_SHORTCUTS_RECTANGLE"),
+        digit: "2",
+        letter: "R",
+      },
+      {
+        type: "diamond" as const,
+        label: t("TOOL_SHORTCUTS_DIAMOND"),
+        digit: "3",
+        letter: "D",
+      },
+      {
+        type: "ellipse" as const,
+        label: t("TOOL_SHORTCUTS_ELLIPSE"),
+        digit: "4",
+        letter: "O",
+      },
+      {
+        type: "arrow" as const,
+        label: t("TOOL_SHORTCUTS_ARROW"),
+        digit: "5",
+        letter: "A",
+      },
+      {
+        type: "line" as const,
+        label: t("TOOL_SHORTCUTS_LINE"),
+        digit: "6",
+        letter: "L",
+      },
+      {
+        type: "freedraw" as const,
+        label: t("TOOL_SHORTCUTS_FREEDRAW"),
+        digit: "7",
+        letter: "P/X",
+      },
+      {
+        type: "text" as const,
+        label: t("TOOL_SHORTCUTS_TEXT"),
+        digit: "8",
+        letter: "T",
+      },
+    ];
+
+    for (const { type, label, digit, letter } of toolShortcutRows) {
+      const shortcutSetting = new Setting(detailsEl)
+        .setName(label)
+        .setDesc(`${digit} / ${letter}`);
+      shortcutSetting.controlEl.createSpan({
+        text: `${t("TOOL_SHORTCUTS_DIGIT")} ${digit}`,
+      });
+      shortcutSetting.addToggle((toggle) =>
+        toggle
+          .setTooltip(`${t("TOOL_SHORTCUTS_DIGIT")} ${digit}`)
+          .setValue(
+            this.plugin.settings.toolShortcutPreferences[type].numeric,
+          )
+          .onChange(async (value) => {
+            this.plugin.settings.toolShortcutPreferences[type].numeric = value;
+            this.applySettingsUpdate();
+          }),
+      );
+      shortcutSetting.controlEl.createSpan({
+        text: `${t("TOOL_SHORTCUTS_LETTER")} ${letter}`,
+      });
+      shortcutSetting.addToggle((toggle) =>
+        toggle
+          .setTooltip(`${t("TOOL_SHORTCUTS_LETTER")} ${letter}`)
+          .setValue(
+            this.plugin.settings.toolShortcutPreferences[type].letter,
+          )
+          .onChange(async (value) => {
+            this.plugin.settings.toolShortcutPreferences[type].letter = value;
+            this.applySettingsUpdate();
+          }),
+      );
+    }
+
+    detailsEl = displayDetailsEl.createEl("details");
+    detailsEl.createEl("summary", {
       text: t("HOTKEY_OVERRIDE_HEAD"),
       cls: "excalidraw-setting-h3",
     });
@@ -3336,6 +3437,24 @@ export class ExcalidrawSettingTab extends PluginSettingTab {
           void this.plugin.initializeFonts();
         }),
     );
+
+    const multiFontsFolderSetting = new Setting(detailsEl)
+      .setName(t("MULTI_FONTS_FOLDER_NAME"))
+      .setDesc(fragWithHTML(t("MULTI_FONTS_FOLDER_DESC")));
+    multiFontsFolderSetting.addText((text) => {
+      text
+        .setPlaceholder(t("MULTI_FONTS_FOLDER_PLACEHOLDER"))
+        .setValue(this.plugin.settings.multiFontsFolder)
+        .onChange(async (value) => {
+          this.requestReloadDrawings = true;
+          this.plugin.settings.multiFontsFolder = normalizePath(value.trim());
+          this.applySettingsUpdate(true);
+          await this.plugin.initializeFonts();
+        });
+      this.addVaultPathSupport(multiFontsFolderSetting, text, "folder", {
+        optional: true,
+      });
+    });
 
     detailsEl = fontsDetailsEl.createEl("details");
     detailsEl.createEl("summary", {

@@ -1,4 +1,24 @@
-# Excalidraw
+# Excalidraw Flux
+
+Excalidraw Flux is an open, upstream-syncable distribution of Excalidraw for Obsidian maintained by `atseis`. It adds enhanced arrowheads and paths, connection modes, configurable tool aliases, two-stroke property shortcuts, and compatibility adapters for the existing HyperFlux script and Action workflow.
+
+Flux deliberately retains the official runtime plugin ID, `obsidian-excalidraw-plugin`, so it replaces the official build instead of running alongside it. This preserves existing vault settings, command IDs, scripts, and ExcaliBrain integration. See [the Flux implementation and compatibility notes](docs/EXCALIDRAW_FLUX.md) for the verified feature surface, build process, BRAT release model, and remaining test gaps.
+
+The modified canvas engine is maintained as open source in [atseis/excalidraw-flux-core](https://github.com/atseis/excalidraw-flux-core). The Core source and this plugin repository are versioned separately, while the tested Core package is embedded into every plugin build.
+
+## Install with BRAT
+
+1. Disable the official Excalidraw plugin if it is currently enabled. Flux deliberately uses the same plugin ID and is a replacement distribution, not a side-by-side installation.
+2. Install and enable [BRAT](https://github.com/TfTHacker/obsidian42-brat) in Obsidian.
+3. Run **BRAT: Add a beta plugin for testing** from the command palette.
+4. Enter `https://github.com/atseis/obsidian-excalidraw-flux` and select the latest version.
+5. Enable **Excalidraw Flux** under **Settings → Community plugins**.
+
+BRAT installs the three assets attached to the latest stable GitHub Release: `main.js`, `styles.css`, and `manifest.json`. Vault-local Excalidraw settings remain in `data.json` and are not part of a release.
+
+This fork is based on and continues to synchronize with [zsviczian/obsidian-excalidraw-plugin](https://github.com/zsviczian/obsidian-excalidraw-plugin). The upstream project remains the source of the original plugin functionality and the documentation retained below; its copyright, license notices, author attribution, learning resources, and support links are preserved.
+
+## Upstream documentation
 
 【English | [简体中文](./docs/zh-cn/README.md)】
 

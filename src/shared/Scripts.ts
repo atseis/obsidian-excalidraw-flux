@@ -1,6 +1,7 @@
 import {
   App,
   Instruction,
+  Notice,
   normalizePath,
   TAbstractFile,
   TFile,
@@ -20,15 +21,34 @@ import {
 } from "../utils/obsidianUtils";
 import { ButtonDefinition, InputPromptOptions } from "src/types/promptTypes";
 import { errorlog } from "src/utils/coreUtils";
+import { wrapTextAtCharLength } from "../utils/textUtils";
+import { prepareLegacyYmjrScript } from "./legacyYmjrScriptCompatibility";
 
 export type ScriptIconMap = {
   [key: string]: { name: string; group: string; svgString: string };
+};
+
+type LegacyYmjrEaTools = Record<string, unknown> & {
+  wrapTextAtCharLength?: typeof wrapTextAtCharLength;
 };
 
 export class ScriptEngine {
   private plugin: ExcalidrawPlugin;
   private app: App;
   private scriptPath: string;
+  /**
+   * YMJR treated scripts named `autorun*`/`_autorun*` (or carrying
+   * `autorun: true` frontmatter) as one-time global initialization scripts.
+   * Keep the flag on the engine so opening additional drawings does not
+   * install the same hooks and ExcalidrawAutomate helpers repeatedly.
+   */
+  private legacyYmjrGlobalAutorunExecuted = false;
+  /**
+   * Legacy autorun helpers close over the EA instance that installed them.
+   * Keep those instances alive for the plugin session and retarget them as
+   * drawings change so the unchanged helper functions always see a live API.
+   */
+  private legacyYmjrAutorunEAs = new Set<ExcalidrawAutomate>();
   //https://stackoverflow.com/questions/60218638/how-to-force-re-render-if-map-value-changes
   public scriptIconMap: ScriptIconMap;
   eaInstances = new WeakArray<ExcalidrawAutomate>();
@@ -55,12 +75,29 @@ export class ScriptEngine {
       }
     });
     this.eaInstances.removeObjects(eas);
+
+    const fallbackView = getExcalidrawViews(this.app, true).find(
+      (candidate) => candidate !== view,
+    );
+    this.legacyYmjrAutorunEAs.forEach((ea) => {
+      if (ea.targetView === view) {
+        ea.targetView = fallbackView ?? null;
+      }
+    });
+    // HyperFlux's obfuscated `_autorun-utils.md` closes over the shared
+    // window.ExcalidrawAutomate object for several helpers, including
+    // updateSceneByZoom. Retarget that global EA as well when its view closes.
+    if (this.plugin.ea?.targetView === view) {
+      this.plugin.ea.targetView = fallbackView ?? null;
+    }
   }
 
   public destroy() {
     this.eaInstances.forEach((ea) => ea.destroy());
     this.eaInstances.clear();
     this.eaInstances = null;
+    this.legacyYmjrAutorunEAs.forEach((ea) => ea.destroy());
+    this.legacyYmjrAutorunEAs.clear();
     this.scriptIconMap = null;
     this.plugin = null;
     this.scriptPath = null;
@@ -164,6 +201,67 @@ export class ScriptEngine {
 
   loadScripts() {
     this.getListofScripts()?.forEach((f) => this.loadScript(f));
+  }
+
+  /**
+   * Runs the legacy YMJR global autorun convention once for the active plugin
+   * session. HyperFlux uses this mechanism to install shared script helpers
+   * such as `ExcalidrawAutomate.tools` before user-invoked scripts call them.
+   *
+   * This remains behind the existing "Enable onload scripts" permission in
+   * ExcalidrawView. Only local files from the configured script folder are
+   * read and passed through the normal script runner (including `//ymjr`
+   * compatibility decoding); no remote code is fetched.
+   */
+  public async runLegacyYmjrAutorunScripts(view: ExcalidrawView) {
+    if (!view) {
+      return;
+    }
+
+    this.rebindLegacyYmjrAutorunEAs(view);
+    if (this.legacyYmjrGlobalAutorunExecuted) {
+      return;
+    }
+
+    this.legacyYmjrGlobalAutorunExecuted = true;
+    const scriptPath = normalizePath(this.plugin.settings.scriptFolderPath);
+    const isAutorunScript = (file: TFile): boolean => {
+      const cache = this.app.metadataCache.getFileCache(file);
+      return (
+        cache?.frontmatter?.autorun === true ||
+        file.basename.startsWith("autorun") ||
+        file.basename.startsWith("_autorun")
+      );
+    };
+    const autorunScripts = this.app.vault
+      .getFiles()
+      .filter(
+        (file) =>
+          file.extension === "md" &&
+          file.path.startsWith(`${scriptPath}/`) &&
+          !file.path.includes("node_modules") &&
+          !file.path.includes("temp_encrypt") &&
+          isAutorunScript(file),
+      );
+
+    for (const file of autorunScripts) {
+      try {
+        const script = await this.app.vault.read(file);
+        await this.executeScript(
+          view,
+          script,
+          this.getScriptName(file),
+          file,
+          true,
+        );
+      } catch (error) {
+        errorlog({
+          where: "ScriptEngine.runLegacyYmjrAutorunScripts",
+          message: `Could not run legacy YMJR autorun script: ${file.path}`,
+          error,
+        });
+      }
+    }
   }
 
   public getScriptName(f: TFile | string): string {
@@ -274,6 +372,7 @@ export class ScriptEngine {
     script: string,
     title: string,
     file: TFile,
+    isLegacyYmjrAutorun = false,
   ) {
     if (!script || !title) {
       return;
@@ -292,77 +391,175 @@ export class ScriptEngine {
     }
 
     script = stripYamlFrontmatter(script);
+    try {
+      script = prepareLegacyYmjrScript(script);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      errorlog({
+        where: "ScriptEngine.executeScript",
+        message: `${title}: ${message}`,
+        error,
+      });
+      new Notice(`Excalidraw script compatibility error: ${message}`, 8000);
+      return null;
+    }
+    this.rebindLegacyYmjrAutorunEAs(view);
     const ea = getEA(view);
-    this.eaInstances.push(ea);
+    // Legacy autorun scripts extend the shared ExcalidrawAutomate instance
+    // with an `ea.tools` object. Official getEA(view) deliberately creates a
+    // fresh instance, so carry that local extension into the per-script EA
+    // without copying or reimplementing the script-owned helper functions.
+    const globalEA = this.plugin.ea as ExcalidrawAutomate & {
+      tools?: LegacyYmjrEaTools;
+    };
+    const legacyTools = (globalEA.tools ??= {});
+    // YMJR exposed this helper through ea.tools. The official plugin already
+    // owns the implementation, so preserve the legacy API as a thin alias
+    // instead of copying the algorithm into either the plugin or user script.
+    legacyTools.wrapTextAtCharLength ??= wrapTextAtCharLength;
+    Object.assign(ea, { tools: legacyTools });
+    if (isLegacyYmjrAutorun) {
+      // Autorun-installed callbacks and ea.tools helpers retain this EA in
+      // their closures. Do not put it in the view-owned collection that is
+      // destroyed when the first drawing unloads.
+      this.legacyYmjrAutorunEAs.add(ea);
+    } else {
+      this.eaInstances.push(ea);
+    }
     ea.activeScript = title;
+
+    // Some YMJR autorun installers call window.ExcalidrawAutomate.getAPI()
+    // while they are being evaluated, then close over that newly-created EA
+    // instead of the `ea` argument above. Snapshot the plugin registry after
+    // creating the installer EA so only nested instances created by the
+    // autorun itself are adopted by the session-scoped compatibility layer.
+    const pluginEAsBeforeAutorun = isLegacyYmjrAutorun
+      ? this.snapshotPluginEAs()
+      : null;
 
     //https://stackoverflow.com/questions/45381204/get-asyncfunction-constructor-in-typescript changed tsconfig to es2017
     //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AsyncFunction
     const AsyncFunction = Object.getPrototypeOf(async () => {}).constructor;
     let result = null;
     //try {
-    result = await new AsyncFunction("ea", "utils", script)(ea, {
-      inputPrompt: (
-        header: string | InputPromptOptions,
-        placeholder?: string,
-        value?: string,
-        buttons?: ButtonDefinition[],
-        lines?: number,
-        displayEditorButtons?: boolean,
-        customComponents?: (container: HTMLElement) => void,
-        blockPointerInputOutsideModal?: boolean,
-        controlsOnTop?: boolean,
-        draggable?: boolean,
-      ) => {
-        if (typeof header === "object") {
-          const options = header;
-          header = options.header;
-          placeholder = options.placeholder;
-          value = options.value;
-          buttons = options.buttons;
-          lines = options.lines;
-          displayEditorButtons = options.displayEditorButtons;
-          customComponents = options.customComponents;
-          blockPointerInputOutsideModal = options.blockPointerInputOutsideModal;
-          controlsOnTop = options.controlsOnTop;
-          draggable = options.draggable;
-        }
-        return ScriptEngine.inputPrompt(
-          view,
-          this.plugin,
-          this.app,
-          header,
-          placeholder,
-          value,
-          buttons,
-          lines,
-          displayEditorButtons,
-          customComponents,
-          blockPointerInputOutsideModal,
-          controlsOnTop,
-          draggable,
-        );
-      },
-      suggester: (
-        displayItems: string[],
-        items: unknown[],
-        hint?: string,
-        instructions?: Instruction[],
-      ) =>
-        ScriptEngine.suggester(
-          this.app,
-          displayItems,
-          items,
-          hint,
-          instructions,
-        ),
-      scriptFile: file,
-    });
+    try {
+      result = await new AsyncFunction("ea", "utils", script)(ea, {
+        inputPrompt: (
+          header: string | InputPromptOptions,
+          placeholder?: string,
+          value?: string,
+          buttons?: ButtonDefinition[],
+          lines?: number,
+          displayEditorButtons?: boolean,
+          customComponents?: (container: HTMLElement) => void,
+          blockPointerInputOutsideModal?: boolean,
+          controlsOnTop?: boolean,
+          draggable?: boolean,
+        ) => {
+          if (typeof header === "object") {
+            const options = header;
+            header = options.header;
+            placeholder = options.placeholder;
+            value = options.value;
+            buttons = options.buttons;
+            lines = options.lines;
+            displayEditorButtons = options.displayEditorButtons;
+            customComponents = options.customComponents;
+            blockPointerInputOutsideModal =
+              options.blockPointerInputOutsideModal;
+            controlsOnTop = options.controlsOnTop;
+            draggable = options.draggable;
+          }
+          return ScriptEngine.inputPrompt(
+            view,
+            this.plugin,
+            this.app,
+            header,
+            placeholder,
+            value,
+            buttons,
+            lines,
+            displayEditorButtons,
+            customComponents,
+            blockPointerInputOutsideModal,
+            controlsOnTop,
+            draggable,
+          );
+        },
+        suggester: (
+          displayItems: string[],
+          items: unknown[],
+          hint?: string,
+          instructions?: Instruction[],
+        ) =>
+          ScriptEngine.suggester(
+            this.app,
+            displayItems,
+            items,
+            hint,
+            instructions,
+          ),
+        scriptFile: file,
+      });
+    } finally {
+      if (pluginEAsBeforeAutorun) {
+        this.captureLegacyYmjrAutorunEAs(pluginEAsBeforeAutorun, view);
+      }
+    }
     /*} catch (e) {
       new Notice(t("SCRIPT_EXECUTION_ERROR"), 4000);
       errorlog({ script: this.plugin.ea.activeScript, error: e });
   }*/
     return result;
+  }
+
+  /**
+   * Retargets the EA instances captured by legacy autorun closures.
+   *
+   * YMJR kept these helpers session-scoped. The official runner normally
+   * creates disposable per-script EA instances, so retaining and rebinding
+   * only the autorun instances restores that lifecycle without changing the
+   * original encrypted scripts or their Action IDs.
+   */
+  private rebindLegacyYmjrAutorunEAs(view?: ExcalidrawView): void {
+    if (!view) {
+      return;
+    }
+    // Some original YMJR helpers close over the global EA rather than the
+    // per-autorun argument. Official Excalidraw Automate keeps that object
+    // viewless by default, so bind it to the same live drawing as retained
+    // autorun instances without changing the original script implementation.
+    if (this.plugin.ea) {
+      this.plugin.ea.targetView = view;
+    }
+    this.legacyYmjrAutorunEAs.forEach((ea) => {
+      ea.targetView = view;
+    });
+  }
+
+  /** Returns the currently-live EAs registered through the public API. */
+  private snapshotPluginEAs(): Set<ExcalidrawAutomate> {
+    const snapshot = new Set<ExcalidrawAutomate>();
+    this.plugin.eaInstances.forEach((ea) => snapshot.add(ea));
+    return snapshot;
+  }
+
+  /**
+   * Adopts EAs created inside a legacy autorun script. Helpers installed by
+   * HyperFlux capture these nested instances in closures, so they need the
+   * same session lifetime and active-view rebinding as the installer EA.
+   */
+  private captureLegacyYmjrAutorunEAs(
+    existingEAs: Set<ExcalidrawAutomate>,
+    view?: ExcalidrawView,
+  ): void {
+    this.plugin.eaInstances.forEach((ea) => {
+      if (existingEAs.has(ea)) {
+        return;
+      }
+      ea.targetView = view ?? null;
+      this.legacyYmjrAutorunEAs.add(ea);
+    });
   }
 
   private updateToolPannels() {

@@ -683,6 +683,20 @@ export default {
   DISPLAY_HEAD: "Apariencia y Comportamiento de Excalidraw",
   DISPLAY_DESC:
     "En la sección 'Apariencia y Comportamiento' de la Configuración de Excalidraw, puedes ajustar cómo se ve y se comporta Excalidraw. Esto incluye opciones para estilos dinámicos, modo para zurdos, coincidencia de temas de Excalidraw y Obsidian, modos predeterminados y más.",
+  TOOL_SHORTCUTS_HEAD: "Alias de atajos de herramientas",
+  TOOL_SHORTCUTS_DESC:
+    "Elige el alias numérico y de letra de cada herramienta. L abre el selector de línea: ls = sólida, ld = discontinua, lt = punteada y la anima directamente las líneas discontinuas o punteadas seleccionadas. A abre el selector de puntas de flecha con las letras del selector nativo: una segunda letra minúscula cambia el extremo final y Shift+letra cambia el inicial. Ejemplos: aq = ninguna, aw = flecha, ab = flecha de bloque y an = flecha de bloque con contorno.",
+  TOOL_SHORTCUTS_DIGIT: "Número",
+  TOOL_SHORTCUTS_LETTER: "Letra",
+  TOOL_SHORTCUTS_ERASER: "Borrador",
+  TOOL_SHORTCUTS_SELECTION: "Selección",
+  TOOL_SHORTCUTS_RECTANGLE: "Rectángulo",
+  TOOL_SHORTCUTS_DIAMOND: "Rombo",
+  TOOL_SHORTCUTS_ELLIPSE: "Elipse",
+  TOOL_SHORTCUTS_ARROW: "Flecha",
+  TOOL_SHORTCUTS_LINE: "Línea",
+  TOOL_SHORTCUTS_FREEDRAW: "Dibujo libre",
+  TOOL_SHORTCUTS_TEXT: "Texto",
   OVERRIDE_OBSIDIAN_FONT_SIZE_NAME:
     "Limitar tamaño de fuente de Obsidian al texto del editor",
   OVERRIDE_OBSIDIAN_FONT_SIZE_DESC:

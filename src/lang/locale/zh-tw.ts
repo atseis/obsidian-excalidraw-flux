@@ -641,6 +641,20 @@ export default {
   DISPLAY_HEAD: "介面 & 行為",
   DISPLAY_DESC:
     "包括：左手模式、動態樣式、匹配 Excalidraw 和 Obsidian 主題、預設執行模式等。",
+  TOOL_SHORTCUTS_HEAD: "工具快捷鍵別名",
+  TOOL_SHORTCUTS_DESC:
+    "分別控制各工具的數字鍵和字母鍵。L 作為線條樣式入口：ls = 實線，ld = 虛線，lt = 點線，la = 直接將已選的虛線或點線轉為動態線條。A 作為 Arrowhead 端點樣式入口，第二鍵沿用原生 Arrowhead 選擇器中的字母：普通小寫字母修改終點，Shift+字母修改起點。例如 aq = 無，aw = 普通箭頭，ab = Block arrow，an = Block arrow outline。",
+  TOOL_SHORTCUTS_DIGIT: "數字",
+  TOOL_SHORTCUTS_LETTER: "字母",
+  TOOL_SHORTCUTS_ERASER: "橡皮擦",
+  TOOL_SHORTCUTS_SELECTION: "選取",
+  TOOL_SHORTCUTS_RECTANGLE: "矩形",
+  TOOL_SHORTCUTS_DIAMOND: "菱形",
+  TOOL_SHORTCUTS_ELLIPSE: "橢圓",
+  TOOL_SHORTCUTS_ARROW: "箭頭",
+  TOOL_SHORTCUTS_LINE: "線條",
+  TOOL_SHORTCUTS_FREEDRAW: "自由繪製",
+  TOOL_SHORTCUTS_TEXT: "文字",
   OVERRIDE_OBSIDIAN_FONT_SIZE_NAME: "限制 Obsidian 字型大小為編輯器文字",
   OVERRIDE_OBSIDIAN_FONT_SIZE_DESC:
     "Obsidian 的自定義字型大小設定會影響整個介面，包括 Excalidraw 和依賴預設字型大小的主題。" +

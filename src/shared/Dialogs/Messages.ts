@@ -13,11 +13,14 @@ const getYouTubeDiv = (videoId: string) => `
 export const RELEASE_NOTES: { [k: string]: string } = {
   Intro: `After each update, you'll see these release notes (you can turn this off in the plugin settings).
 
-I build this plugin as a labor of love. Curious about the philosophy behind it? Check out [📕 Sketch Your Mind](${URLs.COMMUNITY_SKETCH_YOUR_MIND_COM_SYM}). Want to master Excalidraw? Join [Excalidraw Mastery](${URLs.COMMUNITY_SKETCH_YOUR_MIND_COM_EM}). If you find it valuable, say "Thank you", and
-
-<div class="ex-coffee-div"><a href="${URLs.KO_FI_COM_ZSOLT}"><img src="${URLs.CDN_KO_FI_COM_CDN_KOFI3_PNG}" border="0" alt="Buy Me a Coffee at ko-fi.com"  height=45></a></div>
+Excalidraw Flux is an independently maintained, upstream-syncable distribution of Excalidraw for Obsidian. It preserves the upstream project's license and attribution while adding open implementations of the enhanced arrow, connection, shortcut, and legacy-workflow features documented by this fork.
 `,
   "2.27.0": `
+## New in Excalidraw Flux
+- The line-style selector now uses \`L\`: \`ls\` = solid, \`ld\` = dashed, \`lt\` = dotted, and \`la\` immediately applies the matching dash animation without opening the advanced script dialog. The original **add animation for line** Action remains available for custom parameters.
+- \`A\` now opens the Arrowhead selector using the native picker letters. A lowercase second key changes the end Arrowhead; Shift+the second key changes the start. Examples: \`aq\` = None, \`aw\` = Arrow, \`ab\` = Block arrow, and \`an\` = Block arrow outline. Arrow path selection remains available in the properties panel.
+- Stroke and background color pickers add Navy (\`n\`), Lime (\`l\`), Mint (\`m\`), Olive (\`o\`), and Plum (\`p\`), including the existing Shift+1…5 shade controls.
+
 ## Maintenance
 - Refactoring the plugin. Removed unused functions, improved code structure and readability. Removed the obsolete Draw.io/Diagram plugin integration (since the other plugin no longer works and is not maintained) and retired the Create DrawIO file script from the script library.
 - Migrated the embedded Excalidraw runtime from the retired UMD build path to a dedicated ESM-source-based Obsidian package while preserving offline operation, popout windows, and runtime Mermaid loading through Excalidraw Extras. The Assistant UI font is now bundled instead of fetched from the internet, and the plugin-private React runtime is generated from the official npm package entrypoints instead of legacy UMD files.
