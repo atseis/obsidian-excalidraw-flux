@@ -1,7 +1,7 @@
 {
   "id": "obsidian-excalidraw-plugin",
   "name": "Excalidraw Flux",
-  "version": "2.27.0-flux.20260816.10",
+  "version": "2.27.0-flux.20260817.5",
   "minAppVersion": "1.8.7",
   "description": "Open, upstream-syncable Excalidraw fork with enhanced arrows, connections, shortcuts, and legacy workflow compatibility.",
   "author": "atseis",

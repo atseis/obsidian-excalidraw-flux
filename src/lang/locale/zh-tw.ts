@@ -1036,13 +1036,16 @@ export default {
   EMBED_PLACEHOLDER_NAME: "嵌入佔位影像",
   EMBED_PLACEHOLDER_DESC:
     "如果啟用，當沒有繪圖時，將嵌入佔位影像。如果停用，則不嵌入任何影像。",
-  EXPORT_PNG_SCALE_NAME: "匯出 PNG 圖片的比例",
-  EXPORT_PNG_SCALE_DESC: "匯出 PNG 圖片的大小比例",
+  EXPORT_PNG_SCALE_NAME: "匯出 PNG/WebP 圖片的比例",
+  EXPORT_PNG_SCALE_DESC: "匯出 PNG 和 WebP 圖片的大小比例",
+  EXPORT_WEBP_QUALITY_NAME: "WebP 匯出品質",
+  EXPORT_WEBP_QUALITY_DESC:
+    "WebP 品質範圍為 0.5（檔案最小）到 1（品質最高），預設值為 0.80，針對體積較小的圖庫和瀑布流卡片預覽進行了最佳化。",
   EXPORT_BACKGROUND_NAME: "匯出圖片包含背景",
   EXPORT_BACKGROUND_DESC: "如果關閉，將匯出透明背景的圖片。",
   EXPORT_PADDING_NAME: "匯出圖片的空白邊距",
   EXPORT_PADDING_DESC:
-    "匯出 SVG/PNG 圖片四周的空白邊距。單位：畫素。對於 ![[file#^clippedframe=id]]，邊距被設定為 0。<br>" +
+    "匯出 SVG/PNG/WebP 圖片四周的空白邊距。單位：畫素。對於 ![[file#^clippedframe=id]]，邊距被設定為 0。<br>" +
     "增加該值，可以避免在匯出圖片時，圖片邊緣的部分被裁掉。<br>" +
     "可為某個繪圖單獨設定，方法是在其 frontmatter 中新增如 <code>excalidraw-export-padding: 5</code> 的鍵值對。",
   EXPORT_THEME_NAME: "匯出圖片匹配主題",
@@ -1055,24 +1058,26 @@ export default {
     "該項僅在您下次（重新）開啟繪圖時生效。",
   PDF_EXPORT_SETTINGS: "PDF 匯出設定",
   EXPORT_HEAD: "匯出設定",
-  EXPORT_SYNC_NAME: "保持 SVG/PNG 檔名與繪圖檔案同步",
+  EXPORT_SYNC_NAME: "保持 SVG/PNG/WebP 檔名與繪圖檔案同步",
   EXPORT_SYNC_DESC:
-    "開啟後，當繪圖檔案被重新命名時，外掛將同步更新同文件夾下的同名 .SVG 和 .PNG 檔案。" +
-    "當繪圖檔案被刪除時，外掛將自動刪除同文件夾下的同名 .SVG 和 .PNG 檔案。",
+    "開啟後，當繪圖檔案被重新命名時，外掛將同步更新同資料夾下的同名 .SVG、.PNG 和 .WebP 檔案。" +
+    "當繪圖檔案被刪除時，外掛將自動刪除這些同名匯出檔案。",
   EXPORT_SVG_NAME: "自動匯出 SVG 副本",
   EXPORT_SVG_DESC:
     "自動匯出和繪圖檔案同名的 SVG 副本。" +
     "外掛會將副本儲存到繪圖檔案所在資料夾中。" +
     "在文件中嵌入 SVG 檔案，相比直接嵌入繪圖檔案，具有更強的跨平臺能力。<br>" +
     "此開關開啟時，每次您編輯 Excalidraw 繪圖，其 SVG 檔案副本都會同步更新。<br>" +
-    "可為某個繪圖單獨設定，方法是在其 frontmatter 中新增如 <code>excalidraw-autoexport: none/both/svg/png</code>" +
+    "可為某個繪圖單獨設定，方法是在其 frontmatter 中新增如 <code>excalidraw-autoexport: none/both/svg/png/webp/all</code>" +
     "的鍵值對。",
   EXPORT_PNG_NAME: "自動匯出 PNG 副本",
   EXPORT_PNG_DESC: "和“自動匯出 SVG 副本”類似，但是匯出格式為 *.PNG。",
+  EXPORT_WEBP_NAME: "自動匯出 WebP 副本",
+  EXPORT_WEBP_DESC:
+    "每次儲存繪圖時自動產生同名 *.WebP 圖片。WebP 通常比 SVG 或 PNG 佔用更少空間並支援透明背景，適合預覽圖和瀑布流卡片。WebP 是點陣圖片，不會嵌入可編輯的 Excalidraw 場景。",
   EXPORT_BOTH_DARK_AND_LIGHT_NAME: "同時匯出深色和淺色主題的圖片",
   EXPORT_BOTH_DARK_AND_LIGHT_DESC:
-    "若開啟，Excalidraw 將匯出兩個檔案：filename.dark.png（或 .svg）和 filename.light.png（或 .svg）。<br>" +
-    "該項可作用於“自動匯出 SVG 副本”、“自動匯出 PNG 副本”，以及其他的手動的匯出命令。",
+    "若開啟，Excalidraw 將為啟用的 SVG、PNG 和 WebP 自動匯出分別產生深色與淺色版本，例如 filename.dark.webp 和 filename.light.webp。",
   COMPATIBILITY_HEAD: "相容性設定",
   COMPATIBILITY_DESC:
     "如果沒有特殊原因（例如：您想同時在 VSCode/Logseq 和 Obsidian 中使用 Excalidraw），建議您使用 Markdown 格式的繪圖檔案，而不是舊的 Excalidraw.com 格式，因為本外掛的很多功能在舊格式中無法使用。",
@@ -1428,6 +1433,8 @@ export default {
   UPDATE_AVAILABLE: `Excalidraw 的新版本已在社群外掛中可用。\n\n您正在使用 ${PLUGIN_VERSION}。\n最新版本是`,
   SCRIPT_UPDATES_AVAILABLE: `指令碼更新可用 - 請檢查指令碼儲存。\n\n${DEVICE.isDesktop ? `此訊息可在控制台日誌中檢視 (${DEVICE.isMacOS ? "CMD+OPT+i" : "CTRL+SHIFT+i"})\n\n` : ""}如果您已將指令碼組織到指令碼儲存資料夾下的子資料夾中，並且存在同一指令碼的多個副本，可能需要清理未使用的版本以消除此警報。對於無需更新的私人指令碼副本，請將它們儲存在指令碼儲存資料夾之外。`,
   ERROR_PNG_TOO_LARGE: "匯出 PNG 時出錯 - PNG 檔案過大，請嘗試較小的解析度",
+  ERROR_WEBP_EXPORT:
+    "匯出 WebP 時出錯。請嘗試降低匯出比例，或確認目前瀏覽器支援 WebP。",
 
   //modifierkeyHelper.ts
   // WebBrowserDragAction

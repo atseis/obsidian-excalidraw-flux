@@ -166,6 +166,7 @@ export interface ExcalidrawSettings {
   removeTransclusionQuoteSigns: boolean;
   oEmbedAllowed: boolean;
   pngExportScale: number;
+  webpExportQuality: number;
   exportWithTheme: boolean;
   exportWithBackground: boolean;
   exportPaddingSVG: number;
@@ -173,6 +174,7 @@ export interface ExcalidrawSettings {
   keepInSync: boolean;
   autoexportSVG: boolean;
   autoexportPNG: boolean;
+  autoexportWEBP: boolean;
   autoExportLightAndDark: boolean;
   autoexportExcalidraw: boolean;
   embedType: "excalidraw" | "PNG" | "SVG";
@@ -600,6 +602,7 @@ export const DEFAULT_SETTINGS: ExcalidrawSettings = {
   removeTransclusionQuoteSigns: true,
   oEmbedAllowed: false,
   pngExportScale: 1,
+  webpExportQuality: 0.8,
   exportWithTheme: true,
   exportWithBackground: true,
   exportPaddingSVG: 10, //since 1.6.17, not only SVG but also PNG
@@ -607,6 +610,7 @@ export const DEFAULT_SETTINGS: ExcalidrawSettings = {
   keepInSync: false,
   autoexportSVG: false,
   autoexportPNG: false,
+  autoexportWEBP: false,
   autoExportLightAndDark: false,
   autoexportExcalidraw: false,
   embedType: "excalidraw",

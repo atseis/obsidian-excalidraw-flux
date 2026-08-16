@@ -42,6 +42,7 @@ export interface ViewExportDependencies {
   getExportTheme: typeof import("../../utils/utils").getExportTheme;
   getPNG: typeof import("../../utils/utils").getPNG;
   getPNGScale: typeof import("../../utils/utils").getPNGScale;
+  getWebP: typeof import("../../utils/utils").getWebP;
   getSVG: typeof import("../../utils/utils").getSVG;
   getWithBackground: typeof import("../../utils/utils").getWithBackground;
   isMaskFile: typeof import("../../utils/utils").isMaskFile;
@@ -501,6 +502,99 @@ export class ViewExportManager {
     } else {
       await exportImage(
         getIMGFilename(this.view.file.path, "png"),
+        autoexportConfig?.theme,
+      );
+    }
+  }
+
+  /** Creates a WebP blob using the PNG export scale and WebP quality settings. */
+  public async webp(
+    scene: ExcalidrawViewScene,
+    theme?: string,
+    embedScene?: boolean,
+  ): Promise<Blob> {
+    const exportSettings: ExportSettings = {
+      withBackground: !!this.getViewExportWithBackground(),
+      withTheme: true,
+      isMask: this.dependencies.isMaskFile(
+        this.view.plugin,
+        this.view.file,
+      ),
+    };
+
+    const exportTheme = this.getViewExportTheme(theme);
+    const overrideFiles = await this.loadFilesForExport(exportTheme);
+
+    return await this.dependencies.getWebP(
+      {
+        ...scene,
+        appState: {
+          ...scene.appState,
+          theme: exportTheme,
+          exportEmbedScene: this.getViewExportEmbedScene(embedScene),
+        },
+      },
+      exportSettings,
+      this.getViewExportPadding(),
+      this.getViewExportScale(),
+      this.view.plugin.settings.webpExportQuality,
+      overrideFiles ?? undefined,
+    );
+  }
+
+  /** Saves WebP autoexports for the supplied or current scene. */
+  public async saveWebP(data: {
+    scene?: ExcalidrawViewScene;
+    embedScene?: boolean;
+    autoexportConfig?: AutoexportConfig;
+  }): Promise<void | false> {
+    if (!data) {
+      data = {};
+    }
+    if (!this.view.file) {
+      return;
+    }
+    let { scene, embedScene, autoexportConfig } = data;
+    if (!scene) {
+      if (!this.view.excalidrawAPI) {
+        return false;
+      }
+      scene = this.view.getScene();
+    }
+
+    const exportImage = async (filepath: string, theme?: string) => {
+      const webp = await this.webp(scene, theme, embedScene);
+      if (!webp) {
+        return;
+      }
+      await exportImageToFile(
+        this.view,
+        filepath,
+        webp,
+        theme === "dark"
+          ? ".dark.webp"
+          : theme === "light"
+            ? ".light.webp"
+            : ".webp",
+      );
+    };
+
+    if (
+      autoexportConfig?.theme
+        ? autoexportConfig.theme === "both"
+        : this.view.plugin.settings.autoExportLightAndDark
+    ) {
+      await exportImage(
+        getIMGFilename(this.view.file.path, "dark.webp"),
+        "dark",
+      );
+      await exportImage(
+        getIMGFilename(this.view.file.path, "light.webp"),
+        "light",
+      );
+    } else {
+      await exportImage(
+        getIMGFilename(this.view.file.path, "webp"),
         autoexportConfig?.theme,
       );
     }

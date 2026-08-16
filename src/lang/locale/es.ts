@@ -1083,14 +1083,17 @@ export default {
   EMBED_PLACEHOLDER_NAME: "Incrustar imagen de marcador de posición",
   EMBED_PLACEHOLDER_DESC:
     "Si está activado, incrusta una imagen de marcador de posición cuando no hay ningún dibujo. Si está desactivado, no se incrusta ninguna imagen.",
-  EXPORT_PNG_SCALE_NAME: "Escala de la imagen exportada en PNG",
-  EXPORT_PNG_SCALE_DESC: "La escala de tamaño de la imagen PNG exportada.",
+  EXPORT_PNG_SCALE_NAME: "Escala de exportación PNG/WebP",
+  EXPORT_PNG_SCALE_DESC: "La escala de tamaño de las imágenes PNG y WebP exportadas.",
+  EXPORT_WEBP_QUALITY_NAME: "Calidad de exportación WebP",
+  EXPORT_WEBP_QUALITY_DESC:
+    "Calidad WebP entre 0.5 (archivo más pequeño) y 1 (máxima calidad). El valor predeterminado es 0.80, optimizado para vistas previas compactas de galerías y tarjetas en cascada.",
   EXPORT_BACKGROUND_NAME: "Exportar imagen con fondo",
   EXPORT_BACKGROUND_DESC:
     "Si está desactivado, la imagen exportada será transparente.",
   EXPORT_PADDING_NAME: "Relleno de imagen",
   EXPORT_PADDING_DESC:
-    "El relleno (en píxeles) alrededor de la imagen SVG o PNG exportada. El relleno se establece en 0 para las referencias clippedFrame" +
+    "El relleno (en píxeles) alrededor de la imagen SVG, PNG o WebP exportada. El relleno se establece en 0 para las referencias clippedFrame" +
     "Si tienes líneas curvas cerca del borde de la imagen, es posible que se recorten durante la exportación. Puedes aumentar este valor para evitar el recorte. " +
     "También puedes anular esta configuración a nivel de archivo añadiendo la clave frontmatter <code>excalidraw-export-padding: 5<code>.",
   EXPORT_THEME_NAME: "Exportar imagen con el tema",
@@ -1104,10 +1107,10 @@ export default {
   PDF_EXPORT_SETTINGS: "Configuración de exportación a PDF",
   EXPORT_HEAD: "Configuración de auto-exportación",
   EXPORT_SYNC_NAME:
-    "Mantiene los nombres de archivo .SVG y/o .PNG sincronizados con el archivo del bosquejo",
+    "Mantiene los nombres .SVG, .PNG y/o .WebP sincronizados con el archivo del bosquejo",
   EXPORT_SYNC_DESC:
-    "Cuando está activado, el complemento actualizará automáticamente el nombre de los archivos .SVG y/o .PNG cuando el bosquejo en la misma carpeta (y con el mismo nombre) sea renombrado. " +
-    "El complemento también eliminará automáticamente los archivos .SVG y/o .PNG cuando el bosquejo en la misma carpeta (y con el mismo nombre) sea eliminado. ",
+    "Cuando está activado, el complemento actualizará automáticamente los nombres de las exportaciones .SVG, .PNG y .WebP del mismo nombre cuando se renombre el bosquejo. " +
+    "También eliminará esas exportaciones cuando se elimine el bosquejo. ",
   EXPORT_SVG_NAME: "Auto-exportar SVG",
   EXPORT_SVG_DESC:
     "Crea automáticamente una exportación SVG de tu bosquejo que coincida con el título de tu archivo. " +
@@ -1115,13 +1118,15 @@ export default {
     "Incrustar el archivo .svg en tus documentos hace que tus incrustaciones sean independientes de la plataforma. " +
     "Mientras el interruptor de autoexportación esté activado, este archivo se actualizará cada vez que edites el bosquejo de Excalidraw con el nombre correspondiente. " +
     "Puedes anular esta configuración a nivel de archivo añadiendo la clave frontmatter <code>excalidraw-autoexport</code>. Los valores válidos para esta clave son " +
-    "<code>none</code>,<code>both</code>,<code>svg</code>, y <code>png</code>.",
+    "<code>none</code>, <code>both</code> (SVG y PNG), <code>svg</code>, <code>png</code>, <code>webp</code> y <code>all</code>.",
   EXPORT_PNG_NAME: "Auto-exportar PNG",
   EXPORT_PNG_DESC: "Igual que la autoexportación de SVG, pero para *.PNG",
+  EXPORT_WEBP_NAME: "Auto-exportar WebP",
+  EXPORT_WEBP_DESC:
+    "Crea automáticamente una imagen *.WebP del mismo nombre al guardar el bosquejo. WebP suele ocupar mucho menos que SVG o PNG y admite transparencia, por lo que es adecuado para vistas previas y galerías. WebP es raster y no incluye una escena Excalidraw editable.",
   EXPORT_BOTH_DARK_AND_LIGHT_NAME: "Exportar imagen con tema oscuro y claro",
   EXPORT_BOTH_DARK_AND_LIGHT_DESC:
-    "Cuando está habilitado, Excalidraw exportará dos archivos en lugar de uno: nombre-archivo.dark.png, nombre-archivo.light.png y/o nombre-archivo.dark.svg y nombre-archivo.light.svg<br>" +
-    "Se exportarán archivos dobles tanto si la autoexportación de SVG o PNG (o ambos) está habilitada, como al hacer clic en exportar en una sola imagen.",
+    "Cuando está habilitado, Excalidraw exportará variantes oscuras y claras de las exportaciones automáticas SVG, PNG y WebP activadas; por ejemplo, nombre.dark.webp y nombre.light.webp.",
   COMPATIBILITY_HEAD: "Funciones de compatibilidad",
   COMPATIBILITY_DESC:
     "Solo debes habilitar estas funciones si tienes una razón de peso para querer trabajar con archivos de excalidraw.com en lugar de archivos Markdown. Muchas de las funciones del complemento no son compatibles con los archivos heredados. Un caso de uso típico sería si configuras tu bóveda sobre una carpeta de proyecto de Visual Studio Code y también quieres acceder a los bosquejos .excalidraw desde allí. Otro caso de uso podría ser usar Excalidraw en Logseq y Obsidian en paralelo.",
@@ -1487,6 +1492,8 @@ export default {
   SCRIPT_UPDATES_AVAILABLE: `Hay actualizaciones de scripts disponibles; revisa la tienda de scripts.\n\n${DEVICE.isDesktop ? `Este mensaje está disponible en console.log (${DEVICE.isMacOS ? "CMD+OPT+i" : "CTRL+SHIFT+i"})\n\n` : ""}Si has organizado los scripts en subcarpetas dentro de la carpeta de la tienda de scripts y tienes varias copias del mismo script, es posible que necesites limpiar las versiones no utilizadas para borrar esta alerta. Para copias privadas de scripts que no deben actualizarse, guárdalas fuera de la carpeta de la tienda de scripts.`,
   ERROR_PNG_TOO_LARGE:
     "Error al exportar PNG: El archivo PNG es demasiado grande, intenta una resolución más pequeña.",
+  ERROR_WEBP_EXPORT:
+    "Error al exportar WebP. Prueba una escala menor o verifica que el navegador actual admita WebP.",
 
   //modifierkeyHelper.ts
   // WebBrowserDragAction

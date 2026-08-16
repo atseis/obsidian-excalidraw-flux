@@ -3955,7 +3955,7 @@ export class ExcalidrawAutomate {
 
   /**
    * If set, this callback is triggered when the Excalidraw image is being exported to
-   * .svg, .png, or .excalidraw.
+   * .svg, .png, .webp, or .excalidraw.
    * You can use this callback to customize the naming and path of the images. This allows
    * you to place images into an assets folder.
    *
@@ -3974,6 +3974,9 @@ export class ExcalidrawAutomate {
    * - my-drawing.light.svg
    * - my-drawing.dark.png
    * - my-drawing.light.png
+   * - my-drawing.webp
+   * - my-drawing.dark.webp
+   * - my-drawing.light.webp
    *
    * @param data - An object containing the following properties:
    *   @property {string} exportFilepath - Default export filepath for the image.
@@ -4005,7 +4008,7 @@ export class ExcalidrawAutomate {
   }) => string | null = null;
 
   /**
-   * Excalidraw supports auto-export of Excalidraw files to .png, .svg, and .excalidraw formats.
+   * Excalidraw supports auto-export of Excalidraw files to .png, .svg, .webp, and .excalidraw formats.
    *
    * Auto-export of Excalidraw files can be controlled at multiple levels.
    * 1) In plugin settings where you can set up default auto-export applicable to all your Excalidraw files.
@@ -4018,6 +4021,7 @@ export class ExcalidrawAutomate {
    * interface AutoexportConfig {
    *   png: boolean; // Whether to auto-export to PNG
    *   svg: boolean; // Whether to auto-export to SVG
+   *   webp?: boolean; // Whether to auto-export to WebP
    *   excalidraw: boolean; // Whether to auto-export to Excalidraw format
    *   theme: "light" | "dark" | "both"; // The theme to use for the export
    * }

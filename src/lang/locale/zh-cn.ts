@@ -1036,13 +1036,16 @@ export default {
   EMBED_PLACEHOLDER_NAME: "嵌入占位图像",
   EMBED_PLACEHOLDER_DESC:
     "如果启用，当没有绘图时，将嵌入占位图像。如果禁用，则不嵌入任何图像。",
-  EXPORT_PNG_SCALE_NAME: "导出 PNG 图片的比例",
-  EXPORT_PNG_SCALE_DESC: "导出 PNG 图片的大小比例",
+  EXPORT_PNG_SCALE_NAME: "导出 PNG/WebP 图片的比例",
+  EXPORT_PNG_SCALE_DESC: "导出 PNG 和 WebP 图片的大小比例",
+  EXPORT_WEBP_QUALITY_NAME: "WebP 导出质量",
+  EXPORT_WEBP_QUALITY_DESC:
+    "WebP 质量范围为 0.5（文件最小）到 1（质量最高），默认值为 0.80，针对体积较小的图库和瀑布流卡片预览进行了优化。",
   EXPORT_BACKGROUND_NAME: "导出图片包含背景",
   EXPORT_BACKGROUND_DESC: "如果关闭，将导出透明背景的图片。",
   EXPORT_PADDING_NAME: "导出图片的空白边距",
   EXPORT_PADDING_DESC:
-    "导出 SVG/PNG 图片四周的空白边距。单位：像素。对于 ![[file#^clippedframe=id]]，边距被设置为 0。<br>" +
+    "导出 SVG/PNG/WebP 图片四周的空白边距。单位：像素。对于 ![[file#^clippedframe=id]]，边距被设置为 0。<br>" +
     "增加该值，可以避免在导出图片时，图片边缘的部分被裁掉。<br>" +
     "可为某个绘图单独设置，方法是在其 frontmatter 中添加如 <code>excalidraw-export-padding: 5</code> 的键值对。",
   EXPORT_THEME_NAME: "导出图片匹配主题",
@@ -1055,24 +1058,26 @@ export default {
     "该项仅在您下次（重新）打开绘图时生效。",
   PDF_EXPORT_SETTINGS: "PDF 导出设置",
   EXPORT_HEAD: "导出设置",
-  EXPORT_SYNC_NAME: "保持 SVG/PNG 文件名与绘图文件同步",
+  EXPORT_SYNC_NAME: "保持 SVG/PNG/WebP 文件名与绘图文件同步",
   EXPORT_SYNC_DESC:
-    "打开后，当绘图文件被重命名时，插件将同步更新同文件夹下的同名 .SVG 和 .PNG 文件。" +
-    "当绘图文件被删除时，插件将自动删除同文件夹下的同名 .SVG 和 .PNG 文件。",
+    "打开后，当绘图文件被重命名时，插件将同步更新同文件夹下的同名 .SVG、.PNG 和 .WebP 文件。" +
+    "当绘图文件被删除时，插件将自动删除这些同名导出文件。",
   EXPORT_SVG_NAME: "自动导出 SVG 副本",
   EXPORT_SVG_DESC:
     "自动导出和绘图文件同名的 SVG 副本。" +
     "插件会将副本保存到绘图文件所在文件夹中。" +
     "在文档中嵌入 SVG 文件，相比直接嵌入绘图文件，具有更强的跨平台能力。<br>" +
     "此开关开启时，每次您编辑 Excalidraw 绘图，其 SVG 文件副本都会同步更新。<br>" +
-    "可为某个绘图单独设置，方法是在其 frontmatter 中添加如 <code>excalidraw-autoexport: none/both/svg/png</code>" +
+    "可为某个绘图单独设置，方法是在其 frontmatter 中添加如 <code>excalidraw-autoexport: none/both/svg/png/webp/all</code>" +
     "的键值对。",
   EXPORT_PNG_NAME: "自动导出 PNG 副本",
   EXPORT_PNG_DESC: "和“自动导出 SVG 副本”类似，但是导出格式为 *.PNG。",
+  EXPORT_WEBP_NAME: "自动导出 WebP 副本",
+  EXPORT_WEBP_DESC:
+    "每次保存绘图时自动生成同名 *.WebP 图片。WebP 通常比 SVG 或 PNG 占用更少空间并支持透明背景，适合预览图和瀑布流卡片。WebP 是栅格图片，不会嵌入可编辑的 Excalidraw 场景。",
   EXPORT_BOTH_DARK_AND_LIGHT_NAME: "同时导出深色和浅色主题的图片",
   EXPORT_BOTH_DARK_AND_LIGHT_DESC:
-    "若开启，Excalidraw 将导出两个文件：filename.dark.png（或 .svg）和 filename.light.png（或 .svg）。<br>" +
-    "该项可作用于“自动导出 SVG 副本”、“自动导出 PNG 副本”，以及其他的手动的导出命令。",
+    "若开启，Excalidraw 将为启用的 SVG、PNG 和 WebP 自动导出分别生成深色与浅色版本，例如 filename.dark.webp 和 filename.light.webp。",
   COMPATIBILITY_HEAD: "兼容性设置",
   COMPATIBILITY_DESC:
     "如果没有特殊原因（例如：您想同时在 VSCode/Logseq 和 Obsidian 中使用 Excalidraw），建议您使用 Markdown 格式的绘图文件，而不是旧的 Excalidraw.com 格式，因为本插件的很多功能在旧格式中无法使用。",
@@ -1432,6 +1437,8 @@ export default {
   UPDATE_AVAILABLE: `Excalidraw 的新版本已在社区插件中可用。\n\n您正在使用 ${PLUGIN_VERSION}。\n最新版本是`,
   SCRIPT_UPDATES_AVAILABLE: `脚本更新可用 - 请检查脚本存储。\n\n${DEVICE.isDesktop ? `此消息可在控制台日志中查看 (${DEVICE.isMacOS ? "CMD+OPT+i" : "CTRL+SHIFT+i"})\n\n` : ""}如果您已将脚本组织到脚本存储文件夹下的子文件夹中，并且存在同一脚本的多个副本，可能需要清理未使用的版本以消除此警报。对于无需更新的私人脚本副本，请将它们存储在脚本存储文件夹之外。`,
   ERROR_PNG_TOO_LARGE: "导出 PNG 时出错 - PNG 文件过大，请尝试较小的分辨率",
+  ERROR_WEBP_EXPORT:
+    "导出 WebP 时出错。请尝试降低导出比例，或确认当前浏览器支持 WebP。",
 
   //modifierkeyHelper.ts
   // WebBrowserDragAction

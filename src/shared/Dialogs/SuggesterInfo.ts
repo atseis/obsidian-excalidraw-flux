@@ -1317,13 +1317,13 @@ export const EXCALIDRAW_AUTOMATE_INFO: SuggesterInfo[] = [
   {
     field: "onImageExportPathHook",
     code: "onImageExportPathHook: (data: {exportFilepath: string; exportExtension: string; excalidrawFile: TFile; oldExcalidrawPath?: string; action: 'export' | 'move' | 'delete';}) => string | null;",
-    desc: "If set, this callback is triggered when an image is exported to .svg, .png, or .excalidraw. Customize the naming and path for the exported image. Return null or undefined to use the default path.",
+    desc: "If set, this callback is triggered when an image is exported to .svg, .png, .webp, or .excalidraw. Customize the naming and path for the exported image. Return null or undefined to use the default path.",
     after: "",
   },
   {
     field: "onTriggerAutoexportHook",
     code: "onTriggerAutoexportHook: (data: {autoexportConfig: AutoexportConfig; excalidrawFile: TFile;}) => AutoexportConfig | null;",
-    desc: "If set, this callback is triggered when an Excalidraw file is being saved. Allows overriding auto-export settings on the fly. Return a modified AutoexportConfig to override, or null to use defaults.",
+    desc: "If set, this callback is triggered when an Excalidraw file is being saved. Allows overriding SVG, PNG, WebP, and Excalidraw auto-export settings on the fly. Return a modified AutoexportConfig to override, or null to use defaults.",
     after: "",
   },
   {

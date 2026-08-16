@@ -2952,6 +2952,19 @@ export class ExcalidrawSettingTab extends PluginSettingTab {
     });
 
     createSliderWithText(detailsEl, {
+      name: t("EXPORT_WEBP_QUALITY_NAME"),
+      desc: t("EXPORT_WEBP_QUALITY_DESC"),
+      value: this.plugin.settings.webpExportQuality,
+      min: 0.5,
+      max: 1,
+      step: 0.05,
+      onChange: (value) => {
+        this.plugin.settings.webpExportQuality = value;
+        this.applySettingsUpdate();
+      },
+    });
+
+    createSliderWithText(detailsEl, {
       name: t("EXPORT_PADDING_NAME"),
       desc: fragWithHTML(t("EXPORT_PADDING_DESC")),
       value: this.plugin.settings.exportPaddingSVG,
@@ -3088,6 +3101,18 @@ export class ExcalidrawSettingTab extends PluginSettingTab {
               removeDropdownOption("PNG");
             }
             this.plugin.settings.autoexportPNG = value;
+            this.applySettingsUpdate();
+          }),
+      );
+
+    new Setting(detailsEl)
+      .setName(t("EXPORT_WEBP_NAME"))
+      .setDesc(fragWithHTML(t("EXPORT_WEBP_DESC")))
+      .addToggle((toggle) =>
+        toggle
+          .setValue(this.plugin.settings.autoexportWEBP)
+          .onChange(async (value) => {
+            this.plugin.settings.autoexportWEBP = value;
             this.applySettingsUpdate();
           }),
       );

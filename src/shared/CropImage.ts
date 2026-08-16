@@ -199,7 +199,11 @@ export class CropImage {
       .firstElementChild as SVGSVGElement;
   }
 
-  async getCroppedPNG(): Promise<Blob> {
+  /** Renders the cropped mask to a browser-supported raster image format. */
+  async getCroppedImage(
+    mimeType: "image/png" | "image/webp",
+    quality: number = 1,
+  ): Promise<Blob> {
     const svg = await this.buildSVG();
     return new Promise((resolve, reject) => {
       //https://github.com/zsviczian/obsidian-excalidraw-plugin/issues/2026
@@ -227,15 +231,21 @@ export class CropImage {
             if (blob) {
               resolve(blob);
             } else {
-              reject(new Error("Failed to convert to PNG"));
+              reject(new Error(`Failed to convert cropped image to ${mimeType}`));
             }
           },
-          "image/png",
-          1, // image quality (0 - 1)
+          mimeType,
+          quality,
         );
       };
+      image.onerror = () => reject(new Error("Failed to load cropped SVG"));
       image.src = svgToBase64(svgData);
     });
+  }
+
+  /** Preserves the established PNG-specific crop API. */
+  async getCroppedPNG(): Promise<Blob> {
+    return await this.getCroppedImage("image/png");
   }
 
   async getCroppedSVG() {

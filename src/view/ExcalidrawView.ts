@@ -90,6 +90,7 @@ import {
   getExportTheme,
   getPNG,
   getPNGScale,
+  getWebP,
   getSVG,
   getExportPadding,
   getWithBackground,
@@ -519,6 +520,7 @@ export default class ExcalidrawView
       getExportTheme,
       getPNG,
       getPNGScale,
+      getWebP,
       getSVG,
       getWithBackground,
       isMaskFile,
@@ -765,6 +767,24 @@ export default class ExcalidrawView
     return this.exportManager.savePNG(data);
   }
 
+  /** Creates a WebP blob through the view-scoped export manager. */
+  public async webp(
+    scene: ExcalidrawViewScene,
+    theme?: string,
+    embedScene?: boolean,
+  ): Promise<Blob> {
+    return this.exportManager.webp(scene, theme, embedScene);
+  }
+
+  /** Saves WebP autoexports through the view-scoped export manager. */
+  public async saveWebP(data: {
+    scene?: ExcalidrawViewScene;
+    embedScene?: boolean;
+    autoexportConfig?: AutoexportConfig;
+  }) {
+    return this.exportManager.saveWebP(data);
+  }
+
   /** Copies a PNG through the view-scoped export manager. */
   public async exportPNGToClipboard(
     embedScene?: boolean,
@@ -961,12 +981,19 @@ export default class ExcalidrawView
             (autoexportPreference === AutoexportPreference.inherit &&
               this.plugin.settings.autoexportSVG) ||
             autoexportPreference === AutoexportPreference.both ||
-            autoexportPreference === AutoexportPreference.svg,
+            autoexportPreference === AutoexportPreference.svg ||
+            autoexportPreference === AutoexportPreference.all,
           png:
             (autoexportPreference === AutoexportPreference.inherit &&
               this.plugin.settings.autoexportPNG) ||
             autoexportPreference === AutoexportPreference.both ||
-            autoexportPreference === AutoexportPreference.png,
+            autoexportPreference === AutoexportPreference.png ||
+            autoexportPreference === AutoexportPreference.all,
+          webp:
+            (autoexportPreference === AutoexportPreference.inherit &&
+              this.plugin.settings.autoexportWEBP) ||
+            autoexportPreference === AutoexportPreference.webp ||
+            autoexportPreference === AutoexportPreference.all,
           excalidraw:
             !this.compatibilityMode &&
             this.plugin.settings.autoexportExcalidraw,
@@ -976,11 +1003,16 @@ export default class ExcalidrawView
         };
         if (this.getHookServer().onTriggerAutoexportHook) {
           try {
-            autoexportConfig =
-              this.getHookServer().onTriggerAutoexportHook({
-                excalidrawFile: this.file,
-                autoexportConfig,
-              }) ?? autoexportConfig;
+            const hookConfig = this.getHookServer().onTriggerAutoexportHook({
+              excalidrawFile: this.file,
+              autoexportConfig,
+            });
+            // Merge instead of replacing so legacy hooks that predate a newly
+            // added export format do not silently disable that format. Hooks
+            // can still explicitly override WebP by returning webp: false.
+            if (hookConfig) {
+              autoexportConfig = { ...autoexportConfig, ...hookConfig };
+            }
           } catch (e) {
             errorlog({
               where: "ExcalidrawView.save",
@@ -995,6 +1027,9 @@ export default class ExcalidrawView
         }
         if (autoexportConfig.png) {
           void this.savePNG({ autoexportConfig });
+        }
+        if (autoexportConfig.webp) {
+          void this.saveWebP({ autoexportConfig });
         }
         if (autoexportConfig.excalidraw) {
           this.saveExcalidraw();
@@ -1830,6 +1865,17 @@ export default class ExcalidrawView
 
   public setupAutosaveTimer() {
     const timer = () => {
+      // A timer callback may already be queued when Obsidian hot-reloads the
+      // plugin. onClose() deliberately releases `_plugin`; do not reschedule
+      // or dereference settings from that retired view instance.
+      if (
+        !this._plugin ||
+        !this._plugin.settings ||
+        this.semaphores.viewunload
+      ) {
+        this.autosaveTimer = null;
+        return;
+      }
       void (async () => {
         if (!this.isLoaded) {
           this.autosaveTimer = window.setTimeout(timer, this.autosaveInterval);
@@ -1885,7 +1931,12 @@ export default class ExcalidrawView
   }
 
   private resetAutosaveTimer() {
-    if (!this.autosaveFunction) {
+    if (
+      !this.autosaveFunction ||
+      !this._plugin ||
+      !this._plugin.settings ||
+      this.semaphores.viewunload
+    ) {
       return;
     }
 
@@ -2460,7 +2511,18 @@ export default class ExcalidrawView
     //It seems text file view gets the modified file event after sync before the modifyEventHandler in main.ts
     //reload can only be triggered via reload()
     void (async () => {
-      await this.plugin.awaitInit();
+      const plugin = this._plugin;
+      if (!plugin || !plugin.settings || this.semaphores.viewunload) {
+        return;
+      }
+      await plugin.awaitInit();
+      if (
+        this._plugin !== plugin ||
+        !plugin.settings ||
+        this.semaphores.viewunload
+      ) {
+        return;
+      }
       if (this.lastLoadedFile === this.file) {
         return;
       }
@@ -2468,13 +2530,13 @@ export default class ExcalidrawView
       if (!this.file) {
         return;
       }
-      if (this.plugin.settings.compareManifestToPluginVersion) {
-        void checkVersionMismatch(this.plugin);
+      if (plugin.settings.compareManifestToPluginVersion) {
+        void checkVersionMismatch(plugin);
       }
-      if (this.plugin.settings.showNewVersionNotification) {
+      if (plugin.settings.showNewVersionNotification) {
         void checkExcalidrawVersion();
       }
-      if (isMaskFile(this.plugin, this.file)) {
+      if (isMaskFile(plugin, this.file)) {
         const notice = new Notice(t("MASK_FILE_NOTICE"), 5000);
         //add click and hold event listner to the notice
         let noticeTimeout: number;
@@ -2496,18 +2558,37 @@ export default class ExcalidrawView
       this.app.workspace.onLayoutReady(async () => {
         //the leaf moved to a window and ExcalidrawView was destructed
         //Happens during Obsidian startup if View opens in new window.
-        if (!this?.app) {
+        if (
+          !this?.app ||
+          this._plugin !== plugin ||
+          !plugin.settings ||
+          this.semaphores.viewunload
+        ) {
           return;
         }
-        await this.plugin.awaitInit();
+        await plugin.awaitInit();
+        if (
+          this._plugin !== plugin ||
+          !plugin.settings ||
+          this.semaphores.viewunload
+        ) {
+          return;
+        }
         let counter = 0;
         while (
           (!this.semaphores.viewloaded ||
             !this.file ||
-            !this.plugin.fourthFontLoaded) &&
+            !plugin.fourthFontLoaded) &&
           counter++ < 50
         ) {
           await sleep(50);
+          if (
+            this._plugin !== plugin ||
+            !plugin.settings ||
+            this.semaphores.viewunload
+          ) {
+            return;
+          }
         }
         if (!this.file) {
           return;
@@ -2515,13 +2596,13 @@ export default class ExcalidrawView
         this.compatibilityMode = this.file.extension === "excalidraw";
         //await this.plugin.loadSettings();
         if (this.compatibilityMode) {
-          this.plugin.enableLegacyFilePopoverObserver();
+          plugin.enableLegacyFilePopoverObserver();
           this.actionButtons?.isRaw?.hide();
           // this.actionButtons.isParsed.hide();
           this.actionButtons?.link?.hide();
           this.textMode = TextMode.raw;
           await this.excalidrawData.loadLegacyData(data, this.file);
-          if (!this.plugin.settings.compatibilityMode) {
+          if (!plugin.settings.compatibilityMode) {
             new Notice(t("COMPATIBILITY_MODE"), 4000);
           }
           this.excalidrawData.disableCompression = true;

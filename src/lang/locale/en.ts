@@ -1120,14 +1120,17 @@ export default {
   EMBED_PLACEHOLDER_NAME: "Embed placeholder image",
   EMBED_PLACEHOLDER_DESC:
     "If enabled, embeds a placeholder image when no drawing is present. If disabled, no image is embedded.",
-  EXPORT_PNG_SCALE_NAME: "PNG export image scale",
-  EXPORT_PNG_SCALE_DESC: "The size-scale of the exported PNG image",
+  EXPORT_PNG_SCALE_NAME: "PNG/WebP export image scale",
+  EXPORT_PNG_SCALE_DESC: "The size scale of exported PNG and WebP images",
+  EXPORT_WEBP_QUALITY_NAME: "WebP export quality",
+  EXPORT_WEBP_QUALITY_DESC:
+    "WebP quality from 0.5 (smallest files) to 1 (highest quality). The default is 0.80, tuned for compact gallery and waterfall-card previews.",
   EXPORT_BACKGROUND_NAME: "Export image with background",
   EXPORT_BACKGROUND_DESC:
     "If turned off, the exported image will be transparent.",
   EXPORT_PADDING_NAME: "Image Padding",
   EXPORT_PADDING_DESC:
-    "The padding (in pixels) around the exported SVG or PNG image. Padding is set to 0 for clippedFrame references." +
+    "The padding (in pixels) around the exported SVG, PNG, or WebP image. Padding is set to 0 for clippedFrame references." +
     "If you have curved lines close to the edge of the image they might get cropped during image export. You can increase this value to avoid cropping. " +
     "You can also override this setting at a file level by adding the <code>excalidraw-export-padding: 5<code> frontmatter key.",
   EXPORT_THEME_NAME: "Export image with theme",
@@ -1141,10 +1144,10 @@ export default {
   PDF_EXPORT_SETTINGS: "PDF Export Settings",
   EXPORT_HEAD: "Auto-export Settings",
   EXPORT_SYNC_NAME:
-    "Keep the .SVG and/or .PNG filenames in sync with the drawing file",
+    "Keep the .SVG, .PNG, and/or .WebP filenames in sync with the drawing file",
   EXPORT_SYNC_DESC:
-    "When turned on, the plugin will automatically update the filename of the .SVG and/or .PNG files when the drawing in the same folder (and same name) is renamed. " +
-    "The plugin will also automatically delete the .SVG and/or .PNG files when the drawing in the same folder (and same name) is deleted. ",
+    "When turned on, the plugin will automatically update the filename of same-name .SVG, .PNG, and .WebP exports when the drawing is renamed. " +
+    "The plugin will also automatically delete those same-name exports when the drawing is deleted. ",
   EXPORT_SVG_NAME: "Auto-export SVG",
   EXPORT_SVG_DESC:
     "Automatically create an SVG export of your drawing matching the title of your file. " +
@@ -1152,13 +1155,16 @@ export default {
     "Embed the .svg file into your documents instead of Excalidraw making you embeds platform independent. " +
     "While the auto-export switch is on, this file will get updated every time you edit the Excalidraw drawing with the matching name. " +
     "You can override this setting on a file level by adding the <code>excalidraw-autoexport</code> frontmatter key. Valid values for this key are " +
-    "<code>none</code>,<code>both</code>,<code>svg</code>, and <code>png</code>.",
+    "<code>none</code>, <code>both</code> (SVG and PNG), <code>svg</code>, <code>png</code>, <code>webp</code>, and <code>all</code>.",
   EXPORT_PNG_NAME: "Auto-export PNG",
   EXPORT_PNG_DESC: "Same as the auto-export SVG, but for *.PNG",
+  EXPORT_WEBP_NAME: "Auto-export WebP",
+  EXPORT_WEBP_DESC:
+    "Automatically create a same-name *.WebP image whenever the drawing is saved. WebP usually uses much less space than SVG or PNG and supports transparency, making it suitable for previews and gallery cards. WebP is raster and does not embed an editable Excalidraw scene.",
   EXPORT_BOTH_DARK_AND_LIGHT_NAME: "Export both dark- and light-themed image",
   EXPORT_BOTH_DARK_AND_LIGHT_DESC:
-    "When enabled, Excalidraw will export two files instead of one: filename.dark.png, filename.light.png and/or filename.dark.svg and filename.light.svg<br>" +
-    "Double files will be exported both if auto-export SVG or PNG (or both) are enabled, as well as when clicking export on a single image.",
+    "When enabled, Excalidraw will export dark and light variants of enabled SVG, PNG, and WebP auto-exports.<br>" +
+    "Examples include filename.dark.webp and filename.light.webp.",
   COMPATIBILITY_HEAD: "Compatibility features",
   COMPATIBILITY_DESC:
     "You should only enable these features if you have a strong reason for wanting to work with excalidraw.com files instead of markdown files. Many of the plugin features are not supported on legacy files. Typical usecase would be if you use set your vault up on top of a Visual Studio Code project folder and you have .excalidraw drawings you want to access from Visual Studio Code as well. Another usecase might be using Excalidraw in Logseq and Obsidian in parallel.",
@@ -1532,6 +1538,8 @@ export default {
   SCRIPT_UPDATES_AVAILABLE: `Script updates available - check the script store.\n\n${DEVICE.isDesktop ? `This message is available in console.log (${DEVICE.isMacOS ? "CMD+OPT+i" : "CTRL+SHIFT+i"})\n\n` : ""}If you have organized scripts into subfolders under the script store folder and have multiple copies of the same script, you may need to clean up unused versions to clear this alert. For private copies of scripts that should not be updated, store them outside the script store folder.`,
   ERROR_PNG_TOO_LARGE:
     "Error exporting PNG - PNG too large, try a smaller resolution",
+  ERROR_WEBP_EXPORT:
+    "Error exporting WebP. Try a smaller export scale or verify that the current browser supports WebP.",
 
   //modifierkeyHelper.ts
   // WebBrowserDragAction

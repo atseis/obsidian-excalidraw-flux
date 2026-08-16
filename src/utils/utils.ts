@@ -324,6 +324,65 @@ export function filterFiles(
   return filteredFiles;
 }
 
+async function getRasterImage<TScene extends SceneForExport>(
+  scene: TScene,
+  exportSettings: ExportSettings,
+  padding: number,
+  scale: number,
+  overrideFiles: BinaryFiles | undefined,
+  allowFramePadding: boolean,
+  mimeType: "image/png" | "image/webp",
+  quality?: number,
+): Promise<Blob> {
+  const baseFiles = scene.files ?? {};
+  const files = overrideFiles ? { ...baseFiles, ...overrideFiles } : baseFiles;
+
+  let elements = scene.elements.filter(
+    (el: ExcalidrawElement): el is NonDeletedExcalidrawElement =>
+      el.isDeleted !== true,
+  );
+
+  if (exportSettings.isMask) {
+    const cropObject = new CropImage(elements, files);
+    try {
+      return await cropObject.getCroppedImage(mimeType, quality);
+    } finally {
+      cropObject.destroy();
+    }
+  }
+
+  if (elements.length === 0) {
+    elements = getEmptyDrawingElementsRuntime().filter(
+      (el: ExcalidrawElement): el is NonDeletedExcalidrawElement =>
+        el.isDeleted !== true,
+    );
+  }
+
+  return await exportToBlob({
+    elements,
+    appState: {
+      ...scene.appState,
+      exportBackground: exportSettings.withBackground,
+      exportWithDarkMode: exportSettings.withTheme
+        ? scene.appState?.theme !== "light"
+        : false,
+      ...(exportSettings.frameRendering
+        ? { frameRendering: exportSettings.frameRendering }
+        : {}),
+    } as AppState,
+    files: filterFiles(files),
+    exportPadding:
+      exportSettings.frameRendering?.enabled && !allowFramePadding ? 0 : padding,
+    mimeType,
+    ...(typeof quality === "number" ? { quality } : {}),
+    getDimensions: (width: number, height: number) => ({
+      width: width * scale,
+      height: height * scale,
+      scale,
+    }),
+  });
+}
+
 /**
  * Exports an Excalidraw scene to PNG.
  *
@@ -339,57 +398,52 @@ export async function getPNG<TScene extends SceneForExport>(
   allowFramePadding: boolean = false,
 ): Promise<Blob> {
   try {
-    const baseFiles = scene.files ?? {};
-    const files = overrideFiles
-      ? { ...baseFiles, ...overrideFiles }
-      : baseFiles;
-
-    let elements = scene.elements.filter(
-      (el: ExcalidrawElement): el is NonDeletedExcalidrawElement =>
-        el.isDeleted !== true,
+    return await getRasterImage(
+      scene,
+      exportSettings,
+      padding,
+      scale,
+      overrideFiles,
+      allowFramePadding,
+      "image/png",
     );
-
-    if (exportSettings.isMask) {
-      const cropObject = new CropImage(elements, files);
-      const blob = await cropObject.getCroppedPNG();
-      cropObject.destroy();
-      return blob;
-    }
-
-    if (elements.length === 0) {
-      elements = getEmptyDrawingElementsRuntime().filter(
-        (el: ExcalidrawElement): el is NonDeletedExcalidrawElement =>
-          el.isDeleted !== true,
-      );
-    }
-
-    return await exportToBlob({
-      elements,
-      appState: {
-        ...scene.appState,
-        exportBackground: exportSettings.withBackground,
-        exportWithDarkMode: exportSettings.withTheme
-          ? scene.appState?.theme !== "light"
-          : false,
-        ...(exportSettings.frameRendering
-          ? { frameRendering: exportSettings.frameRendering }
-          : {}),
-      } as AppState,
-      files: filterFiles(files),
-      exportPadding:
-        exportSettings.frameRendering?.enabled && !allowFramePadding
-          ? 0
-          : padding,
-      mimeType: "image/png",
-      getDimensions: (width: number, height: number) => ({
-        width: width * scale,
-        height: height * scale,
-        scale,
-      }),
-    });
   } catch (error) {
     new Notice(t("ERROR_PNG_TOO_LARGE"));
     errorlog({ where: "Utils.getPNG", error });
+    return null;
+  }
+}
+
+/**
+ * Exports an Excalidraw scene to WebP using the browser's local canvas encoder.
+ */
+export async function getWebP<TScene extends SceneForExport>(
+  scene: TScene,
+  exportSettings: ExportSettings,
+  padding: number,
+  scale: number = 1,
+  quality: number = 0.8,
+  overrideFiles?: BinaryFiles,
+  allowFramePadding: boolean = false,
+): Promise<Blob> {
+  try {
+    const blob = await getRasterImage(
+      scene,
+      exportSettings,
+      padding,
+      scale,
+      overrideFiles,
+      allowFramePadding,
+      "image/webp",
+      quality,
+    );
+    if (blob.type !== "image/webp") {
+      throw new Error("The current browser runtime does not support WebP export");
+    }
+    return blob;
+  } catch (error) {
+    new Notice(t("ERROR_WEBP_EXPORT"));
+    errorlog({ where: "Utils.getWebP", error });
     return null;
   }
 }

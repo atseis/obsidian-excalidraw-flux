@@ -277,6 +277,9 @@ export const EXPORT_TYPES = [
   "png",
   "dark.png",
   "light.png",
+  "webp",
+  "dark.webp",
+  "light.webp",
 ];
 export const MAX_IMAGE_SIZE = 500;
 export const CARD_WIDTH = 400;

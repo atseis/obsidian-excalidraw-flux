@@ -131,6 +131,8 @@ export enum AutoexportPreference {
   png,
   svg,
   inherit,
+  webp,
+  all,
 }
 
 export const REGEX_TAGS = {
@@ -2396,6 +2398,12 @@ export class ExcalidrawData {
           break;
         case "svg":
           this.autoexportPreference = AutoexportPreference.svg;
+          break;
+        case "webp":
+          this.autoexportPreference = AutoexportPreference.webp;
+          break;
+        case "all":
+          this.autoexportPreference = AutoexportPreference.all;
           break;
         default:
           this.autoexportPreference = AutoexportPreference.inherit;

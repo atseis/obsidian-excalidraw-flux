@@ -35,6 +35,7 @@ export interface EmbeddableLeafRef {
 export interface AutoexportConfig {
   png: boolean; // Whether to auto-export to PNG
   svg: boolean; // Whether to auto-export to SVG
+  webp?: boolean; // Whether to auto-export to WebP; optional for existing hook implementations
   excalidraw: boolean; // Whether to auto-export to Excalidraw format
   theme: "light" | "dark" | "both"; // The theme to use for the export
 }

@@ -17,6 +17,7 @@ Excalidraw Flux is an independently maintained, upstream-syncable distribution o
 `,
   "2.27.0": `
 ## New in Excalidraw Flux
+- Added native WebP auto-export with a configurable quality setting. WebP participates in dark/light variants, export path hooks, and same-name rename/delete synchronization; per-file frontmatter accepts \`webp\` and \`all\`.
 - The line-style selector now uses \`L\`: \`ls\` = solid, \`ld\` = dashed, \`lt\` = dotted, and \`la\` immediately applies the matching dash animation without opening the advanced script dialog. The original **add animation for line** Action remains available for custom parameters.
 - \`A\` now opens the Arrowhead selector using the native picker letters. A lowercase second key changes the end Arrowhead; Shift+the second key changes the start. Examples: \`aq\` = None, \`aw\` = Arrow, \`ab\` = Block arrow, and \`an\` = Block arrow outline. Arrow path selection remains available in the properties panel.
 - Stroke and background color pickers add Navy (\`n\`), Lime (\`l\`), Mint (\`m\`), Olive (\`o\`), and Plum (\`p\`), including the existing Shift+1…5 shade controls.
