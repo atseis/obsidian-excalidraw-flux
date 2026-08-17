@@ -152,8 +152,7 @@ export default {
   MARKDOWN_IMAGE_CSS_EDITOR_ARIA: "CSS editor for this Markdown image",
   MARKDOWN_IMAGE_TRANSCLUSION_CSS_EDITOR_ARIA:
     "CSS editor for transcluded Markdown",
-  MARKDOWN_IMAGE_INSERT_CSS_BOILERPLATE:
-    "Insert a commented CSS boilerplate",
+  MARKDOWN_IMAGE_INSERT_CSS_BOILERPLATE: "Insert a commented CSS boilerplate",
   MARKDOWN_IMAGE_COPY_SVG: "Copy the current Markdown image SVG",
   MARKDOWN_IMAGE_SVG_COPIED: "Markdown image SVG copied",
   MARKDOWN_IMAGE_SVG_COPY_ERROR: "Could not copy the Markdown image SVG",
@@ -714,7 +713,7 @@ export default {
     "In the 'appearance and behavior' section of Excalidraw Settings, you can fine-tune how Excalidraw appears and behaves. This includes options for dynamic styling, left-handed mode, matching Excalidraw and Obsidian themes, default modes, and more.",
   TOOL_SHORTCUTS_HEAD: "Tool shortcut aliases",
   TOOL_SHORTCUTS_DESC:
-    "Choose whether each tool responds to its digit and letter alias. L opens the line-style selector: ls = solid, ld = dashed, lt = dotted, and la immediately animates selected dashed/dotted lines. A opens the Arrowhead selector using the native picker letters: a plus a lowercase letter changes the end, while a plus Shift+letter changes the start. Examples: aq = none, aw = arrow, ab = block arrow, and an = block arrow outline.",
+    "Choose whether each tool responds to its digit and letter alias. L selects line style (ls/ld/lt) or animates a dashed/dotted line (la). C selects Connection Mode: co = Off, cp = Points, ce = Edges. A selects Arrow Type: as = Sharp, ac = Curved, ae = Elbow, aa = Automatic Curve. H selects Arrowheads using the native picker letters: a lowercase second key changes the end, while Shift+the second key changes the start. Flux reserves H for Arrowheads, so Hand has no H alias. S and G open the full stroke/background palettes. B activates Bucket Fill and keeps the full background palette open for repeated color changes and fills until Esc; palette letters and punctuation are shown in the panel, and Shift+1…5 selects a shade.",
   TOOL_SHORTCUTS_DIGIT: "Digit",
   TOOL_SHORTCUTS_LETTER: "Letter",
   TOOL_SHORTCUTS_ERASER: "Eraser",
@@ -1250,7 +1249,8 @@ export default {
   AUTOSTART_SCRIPTS_HEAD: "Autostart scripts",
   AUTOSTART_SCRIPTS_DESC:
     "Scripts appear here once they ask for permission to run automatically every time a new Excalidraw view opens (running the script once, manually, is what triggers the request). Change a script's setting at any time.",
-  AUTOSTART_SCRIPTS_EMPTY: "No scripts have requested autostart permission yet.",
+  AUTOSTART_SCRIPTS_EMPTY:
+    "No scripts have requested autostart permission yet.",
   AUTOSTART_SCRIPT_FAILED_WARNING:
     "This script failed the last time it tried to autostart.",
   ENABLE_COMMAND_LINKS_NAME: "Enable command links (cmd://)",

@@ -52,7 +52,8 @@ export default {
   LIBRARY_MIGRATION_KEEP_DATA_JSON: "Seguir usando data.json",
   LIBRARY_MIGRATION_LATER: "Más tarde",
   LIBRARY_MIGRATION_MIGRATE: "Mover biblioteca",
-  LIBRARY_MIGRATION_SUCCESS: "La biblioteca de Excalidraw se movió a la bóveda.",
+  LIBRARY_MIGRATION_SUCCESS:
+    "La biblioteca de Excalidraw se movió a la bóveda.",
   LIBRARY_MIGRATION_FAILED:
     "No se pudo mover la biblioteca. La biblioteca original de data.json no se modificó.",
   LIBRARY_FILE_READ_ERROR: "No se pudo leer la biblioteca: {PATH}",
@@ -132,7 +133,8 @@ export default {
   INSERT_MD: "Insertar archivo Markdown desde la bóveda",
   INSERT_MARKDOWN_IMAGE: "Insertar imagen Markdown editable",
   EDIT_MARKDOWN_IMAGE: "Editar imagen Markdown",
-  MARKDOWN_IMAGE_SELECT_ERROR: "Selecciona una imagen Markdown e inténtalo de nuevo",
+  MARKDOWN_IMAGE_SELECT_ERROR:
+    "Selecciona una imagen Markdown e inténtalo de nuevo",
   MARKDOWN_IMAGE_TITLE: "Imagen Markdown",
   MARKDOWN_IMAGE_INSERT_ERROR: "No se pudo insertar la imagen Markdown",
   MARKDOWN_IMAGE_APPEARANCE: "Apariencia",
@@ -153,8 +155,7 @@ export default {
   MARKDOWN_IMAGE_CSS_EDITOR_ARIA: "Editor CSS para esta imagen Markdown",
   MARKDOWN_IMAGE_TRANSCLUSION_CSS_EDITOR_ARIA:
     "Editor CSS para Markdown transcluido",
-  MARKDOWN_IMAGE_INSERT_CSS_BOILERPLATE:
-    "Insertar una plantilla CSS comentada",
+  MARKDOWN_IMAGE_INSERT_CSS_BOILERPLATE: "Insertar una plantilla CSS comentada",
   MARKDOWN_IMAGE_COPY_SVG: "Copiar el SVG de la imagen Markdown actual",
   MARKDOWN_IMAGE_SVG_COPIED: "SVG de la imagen Markdown copiado",
   MARKDOWN_IMAGE_SVG_COPY_ERROR:
@@ -172,7 +173,8 @@ export default {
   MARKDOWN_IMAGE_SET_DEFAULT: "Establecer como predeterminado",
   MARKDOWN_IMAGE_SAVE_DEFAULT_ARIA:
     "Guardar la configuración de apariencia actual como predeterminada",
-  MARKDOWN_IMAGE_DEFAULT_SAVED: "Valores predeterminados de imagen Markdown guardados",
+  MARKDOWN_IMAGE_DEFAULT_SAVED:
+    "Valores predeterminados de imagen Markdown guardados",
   MARKDOWN_IMAGE_RENDER_NOW: "Renderizar ahora",
   MARKDOWN_IMAGE_UPDATING: "Actualizando imagen…",
   MARKDOWN_IMAGE_EXTERNAL_SOURCE: "Fuente Markdown externa",
@@ -180,13 +182,16 @@ export default {
     "Abrir la fuente Markdown externa en una pestaña nueva",
   MARKDOWN_IMAGE_MAKE_LOCAL: "Crear copia local",
   MARKDOWN_IMAGE_EXTERNAL_TARGET: "Nota, encabezado o bloque externo",
-  MARKDOWN_IMAGE_EXTERNAL_DESC: "Introduce un enlace de Obsidian como fuente externa",
+  MARKDOWN_IMAGE_EXTERNAL_DESC:
+    "Introduce un enlace de Obsidian como fuente externa",
   MARKDOWN_IMAGE_USE_SOURCE: "Usar fuente",
   MARKDOWN_IMAGE_EXTRACT_LOCAL: "Extraer Markdown local a una nota",
   MARKDOWN_IMAGE_EXTRACT: "Extraer a nota",
   MARKDOWN_IMAGE_DUPLICATE_ERROR: "No se pudo duplicar la imagen Markdown",
-  MARKDOWN_IMAGE_SELECT_SOURCE: "Selecciona una nota, encabezado o bloque Markdown",
-  MARKDOWN_IMAGE_CHANGE_SOURCE_ERROR: "No se pudo cambiar la fuente de la imagen Markdown",
+  MARKDOWN_IMAGE_SELECT_SOURCE:
+    "Selecciona una nota, encabezado o bloque Markdown",
+  MARKDOWN_IMAGE_CHANGE_SOURCE_ERROR:
+    "No se pudo cambiar la fuente de la imagen Markdown",
   MARKDOWN_IMAGE_LOCAL_COPY_ERROR: "No se pudo crear una copia Markdown local",
   MARKDOWN_IMAGE_EXTRACT_TITLE: "Extraer imagen Markdown a una nota",
   FILE_AND_FOLDER_SELECTOR_FOLDER: "Carpeta",
@@ -196,18 +201,23 @@ export default {
   MARKDOWN_IMAGE_DEFAULT_NOTE: "Imagen Markdown.md",
   MARKDOWN_IMAGE_CREATE_NOTE_ERROR: "No se pudo crear la nota Markdown",
   MARKDOWN_IMAGE_UNKNOWN_ERROR: "Error desconocido",
-  MARKDOWN_IMAGE_SOURCE_UNAVAILABLE: "La fuente de la imagen Markdown no está disponible.",
-  MARKDOWN_IMAGE_RESERVED_MARKER: "El cuerpo Markdown contiene una línea de marcador reservada.",
-  MARKDOWN_IMAGE_EMPTY_PLACEHOLDER: "Empieza a escribir en el editor de imágenes Markdown…",
+  MARKDOWN_IMAGE_SOURCE_UNAVAILABLE:
+    "La fuente de la imagen Markdown no está disponible.",
+  MARKDOWN_IMAGE_RESERVED_MARKER:
+    "El cuerpo Markdown contiene una línea de marcador reservada.",
+  MARKDOWN_IMAGE_EMPTY_PLACEHOLDER:
+    "Empieza a escribir en el editor de imágenes Markdown…",
   MARKDOWN_IMAGE_NO_SELECTION: "Selecciona una imagen Markdown para editarla.",
   MARKDOWN_IMAGE_ATTACHED_TO: "Adjunto a {file}",
-  MARKDOWN_IMAGE_FOCUS_OWNER: "Enfocar el documento Excalidraw propietario: {file}",
+  MARKDOWN_IMAGE_FOCUS_OWNER:
+    "Enfocar el documento Excalidraw propietario: {file}",
   MARKDOWN_IMAGE_OWNER_UNAVAILABLE:
     "El documento Excalidraw propietario ya no está disponible.",
   MARKDOWN_IMAGE_RESIZE_EDITOR: "Cambiar el tamaño del editor Markdown",
   CONVERT_EMBEDDABLE_TO_MARKDOWN_IMAGE: "Convertir en imagen Markdown",
   CONVERT_MARKDOWN_IMAGE_TO_EMBEDDABLE: "Convertir en elemento incrustado",
-  MARKDOWN_IMAGE_CONVERSION_ERROR: "No se pudo convertir el contenido Markdown.",
+  MARKDOWN_IMAGE_CONVERSION_ERROR:
+    "No se pudo convertir el contenido Markdown.",
   MARKDOWN_IMAGE_H1_WARNING:
     "Una imagen Markdown local solo puede contener un encabezado de nivel 1 al convertirse en elemento incrustado. Debe ser el primer contenido y su nombre debe ser único en el dibujo.",
   MARKDOWN_IMAGE_SECTION_NAME: "Nombre de la sección al final de la nota",
@@ -685,7 +695,7 @@ export default {
     "En la sección 'Apariencia y Comportamiento' de la Configuración de Excalidraw, puedes ajustar cómo se ve y se comporta Excalidraw. Esto incluye opciones para estilos dinámicos, modo para zurdos, coincidencia de temas de Excalidraw y Obsidian, modos predeterminados y más.",
   TOOL_SHORTCUTS_HEAD: "Alias de atajos de herramientas",
   TOOL_SHORTCUTS_DESC:
-    "Elige el alias numérico y de letra de cada herramienta. L abre el selector de línea: ls = sólida, ld = discontinua, lt = punteada y la anima directamente las líneas discontinuas o punteadas seleccionadas. A abre el selector de puntas de flecha con las letras del selector nativo: una segunda letra minúscula cambia el extremo final y Shift+letra cambia el inicial. Ejemplos: aq = ninguna, aw = flecha, ab = flecha de bloque y an = flecha de bloque con contorno.",
+    "Elige el alias numérico y de letra de cada herramienta. L elige el estilo de línea (ls/ld/lt) o anima una línea discontinua o punteada (la). C elige el modo de conexión: co = desactivado, cp = puntos, ce = bordes. A elige el tipo de flecha: as = recta, ac = curva, ae = codo, aa = curva automática. H elige las puntas con las letras del selector nativo: una segunda letra minúscula cambia el extremo final y Shift+letra cambia el inicial. Flux reserva H para las puntas, así que Mano no tiene alias H. S y G abren las paletas completas de trazo y fondo. B activa el relleno y mantiene abierta la paleta completa de fondo para cambiar colores y rellenar repetidamente hasta pulsar Esc; el panel muestra las letras y signos disponibles, y Shift+1…5 elige el tono.",
   TOOL_SHORTCUTS_DIGIT: "Número",
   TOOL_SHORTCUTS_LETTER: "Letra",
   TOOL_SHORTCUTS_ERASER: "Borrador",
@@ -1084,7 +1094,8 @@ export default {
   EMBED_PLACEHOLDER_DESC:
     "Si está activado, incrusta una imagen de marcador de posición cuando no hay ningún dibujo. Si está desactivado, no se incrusta ninguna imagen.",
   EXPORT_PNG_SCALE_NAME: "Escala de exportación PNG/WebP",
-  EXPORT_PNG_SCALE_DESC: "La escala de tamaño de las imágenes PNG y WebP exportadas.",
+  EXPORT_PNG_SCALE_DESC:
+    "La escala de tamaño de las imágenes PNG y WebP exportadas.",
   EXPORT_WEBP_QUALITY_NAME: "Calidad de exportación WebP",
   EXPORT_WEBP_QUALITY_DESC:
     "Calidad WebP entre 0.5 (archivo más pequeño) y 1 (máxima calidad). El valor predeterminado es 0.80, optimizado para vistas previas compactas de galerías y tarjetas en cascada.",

@@ -43,7 +43,7 @@ export default {
   LIBRARY_MIGRATION_DESC:
     "Excalidraw может хранить библиотеку в отдельном файле хранилища вместо data.json. Это делает сохранение стабильнее. Существующие элементы будут объединены с выбранным локальным файлом; файлы *.excalidrawlib в той же папке также будут загружены. Выберите «Позже», чтобы скрыть это сообщение до завтра.",
   LIBRARY_MIGRATION_SYNC_WARNING:
-    'Для синхронизации файлов библиотеки включите «Синхронизировать все остальные типы» в настройках Obsidian Sync.',
+    "Для синхронизации файлов библиотеки включите «Синхронизировать все остальные типы» в настройках Obsidian Sync.",
   LIBRARY_MIGRATION_KEEP_DATA_JSON: "Оставить в data.json",
   LIBRARY_MIGRATION_LATER: "Позже",
   LIBRARY_MIGRATION_MIGRATE: "Перенести библиотеку",
@@ -123,7 +123,8 @@ export default {
   INSERT_MD: "Вставка файла markdown из хранилища",
   INSERT_MARKDOWN_IMAGE: "Вставить редактируемое Markdown-изображение",
   EDIT_MARKDOWN_IMAGE: "Редактировать Markdown-изображение",
-  MARKDOWN_IMAGE_SELECT_ERROR: "Выберите Markdown-изображение и повторите попытку",
+  MARKDOWN_IMAGE_SELECT_ERROR:
+    "Выберите Markdown-изображение и повторите попытку",
   MARKDOWN_IMAGE_TITLE: "Markdown-изображение",
   MARKDOWN_IMAGE_INSERT_ERROR: "Не удалось вставить Markdown-изображение",
   MARKDOWN_IMAGE_APPEARANCE: "Оформление",
@@ -144,8 +145,7 @@ export default {
   MARKDOWN_IMAGE_CSS_EDITOR_ARIA: "Редактор CSS для этого Markdown-изображения",
   MARKDOWN_IMAGE_TRANSCLUSION_CSS_EDITOR_ARIA:
     "Редактор CSS для встроенного Markdown",
-  MARKDOWN_IMAGE_INSERT_CSS_BOILERPLATE:
-    "Вставить шаблон CSS с комментариями",
+  MARKDOWN_IMAGE_INSERT_CSS_BOILERPLATE: "Вставить шаблон CSS с комментариями",
   MARKDOWN_IMAGE_COPY_SVG: "Копировать SVG текущего Markdown-изображения",
   MARKDOWN_IMAGE_SVG_COPIED: "SVG Markdown-изображения скопирован",
   MARKDOWN_IMAGE_SVG_COPY_ERROR:
@@ -171,14 +171,17 @@ export default {
     "Открыть внешний источник Markdown в новой вкладке",
   MARKDOWN_IMAGE_MAKE_LOCAL: "Создать локальную копию",
   MARKDOWN_IMAGE_EXTERNAL_TARGET: "Внешняя заметка, заголовок или блок",
-  MARKDOWN_IMAGE_EXTERNAL_DESC: "Введите ссылку Obsidian для внешнего источника",
+  MARKDOWN_IMAGE_EXTERNAL_DESC:
+    "Введите ссылку Obsidian для внешнего источника",
   MARKDOWN_IMAGE_USE_SOURCE: "Использовать источник",
   MARKDOWN_IMAGE_EXTRACT_LOCAL: "Извлечь локальный Markdown в заметку",
   MARKDOWN_IMAGE_EXTRACT: "Извлечь в заметку",
   MARKDOWN_IMAGE_DUPLICATE_ERROR: "Не удалось дублировать Markdown-изображение",
   MARKDOWN_IMAGE_SELECT_SOURCE: "Выберите Markdown-заметку, заголовок или блок",
-  MARKDOWN_IMAGE_CHANGE_SOURCE_ERROR: "Не удалось изменить источник Markdown-изображения",
-  MARKDOWN_IMAGE_LOCAL_COPY_ERROR: "Не удалось создать локальную копию Markdown",
+  MARKDOWN_IMAGE_CHANGE_SOURCE_ERROR:
+    "Не удалось изменить источник Markdown-изображения",
+  MARKDOWN_IMAGE_LOCAL_COPY_ERROR:
+    "Не удалось создать локальную копию Markdown",
   MARKDOWN_IMAGE_EXTRACT_TITLE: "Извлечь Markdown-изображение в заметку",
   FILE_AND_FOLDER_SELECTOR_FOLDER: "Папка",
   FILE_AND_FOLDER_SELECTOR_FILENAME: "Имя файла",
@@ -187,19 +190,22 @@ export default {
   MARKDOWN_IMAGE_DEFAULT_NOTE: "Markdown-изображение.md",
   MARKDOWN_IMAGE_CREATE_NOTE_ERROR: "Не удалось создать Markdown-заметку",
   MARKDOWN_IMAGE_UNKNOWN_ERROR: "Неизвестная ошибка",
-  MARKDOWN_IMAGE_SOURCE_UNAVAILABLE: "Источник Markdown-изображения недоступен.",
-  MARKDOWN_IMAGE_RESERVED_MARKER: "Текст Markdown содержит зарезервированную строку-маркер.",
-  MARKDOWN_IMAGE_EMPTY_PLACEHOLDER: "Начните вводить текст в редакторе Markdown-изображения…",
-  MARKDOWN_IMAGE_NO_SELECTION: "Выберите Markdown-изображение для редактирования.",
+  MARKDOWN_IMAGE_SOURCE_UNAVAILABLE:
+    "Источник Markdown-изображения недоступен.",
+  MARKDOWN_IMAGE_RESERVED_MARKER:
+    "Текст Markdown содержит зарезервированную строку-маркер.",
+  MARKDOWN_IMAGE_EMPTY_PLACEHOLDER:
+    "Начните вводить текст в редакторе Markdown-изображения…",
+  MARKDOWN_IMAGE_NO_SELECTION:
+    "Выберите Markdown-изображение для редактирования.",
   MARKDOWN_IMAGE_ATTACHED_TO: "Привязано к {file}",
-  MARKDOWN_IMAGE_FOCUS_OWNER: "Перейти к исходному документу Excalidraw: {file}",
+  MARKDOWN_IMAGE_FOCUS_OWNER:
+    "Перейти к исходному документу Excalidraw: {file}",
   MARKDOWN_IMAGE_OWNER_UNAVAILABLE:
     "Исходный документ Excalidraw больше недоступен.",
   MARKDOWN_IMAGE_RESIZE_EDITOR: "Изменить размер редактора Markdown",
-  CONVERT_EMBEDDABLE_TO_MARKDOWN_IMAGE:
-    "Преобразовать в изображение Markdown",
-  CONVERT_MARKDOWN_IMAGE_TO_EMBEDDABLE:
-    "Преобразовать во встраиваемый элемент",
+  CONVERT_EMBEDDABLE_TO_MARKDOWN_IMAGE: "Преобразовать в изображение Markdown",
+  CONVERT_MARKDOWN_IMAGE_TO_EMBEDDABLE: "Преобразовать во встраиваемый элемент",
   MARKDOWN_IMAGE_CONVERSION_ERROR:
     "Не удалось преобразовать содержимое Markdown.",
   MARKDOWN_IMAGE_H1_WARNING:
@@ -628,7 +634,7 @@ export default {
     "В разделе 'Внешний вид и поведение' раздела Настройки Excalidraw вы можете настроить внешний вид и поведение Excalidraw. Сюда входят опции динамической стилизации, режима для левой руки, соответствия тем Excalidraw и Obsidian, режимов по умолчанию и многое другое.",
   TOOL_SHORTCUTS_HEAD: "Псевдонимы клавиш инструментов",
   TOOL_SHORTCUTS_DESC:
-    "Выберите цифровую и буквенную клавиши для каждого инструмента. L открывает выбор линии: ls — сплошная, ld — штриховая, lt — точечная, la — мгновенная анимация выбранной штриховой или точечной линии. A открывает выбор наконечника по буквам нативной панели: вторая строчная буква меняет конечный наконечник, а Shift+буква — начальный. Примеры: aq — нет, aw — стрелка, ab — блочная стрелка, an — контурная блочная стрелка.",
+    "Выберите цифровую и буквенную клавиши для каждого инструмента. L задаёт стиль линии (ls/ld/lt) или анимирует штриховую/точечную линию (la). C задаёт режим соединения: co — выкл., cp — точки, ce — края. A задаёт тип стрелки: as — острая, ac — кривая, ae — угловая, aa — автоматическая кривая. H задаёт наконечники по буквам нативной панели: вторая строчная клавиша меняет конец, Shift+клавиша — начало. В Flux H зарезервирована для наконечников, поэтому у инструмента «Рука» нет псевдонима H. S и G открывают полные палитры обводки и фона. B включает заливку и оставляет полную палитру фона открытой для последовательной смены цвета и заливок до нажатия Esc; буквы и знаки показаны в панели, Shift+1…5 выбирает оттенок.",
   TOOL_SHORTCUTS_DIGIT: "Цифра",
   TOOL_SHORTCUTS_LETTER: "Буква",
   TOOL_SHORTCUTS_ERASER: "Ластик",
@@ -1119,7 +1125,8 @@ export default {
   AUTOSTART_SCRIPTS_HEAD: "Автозапуск скриптов",
   AUTOSTART_SCRIPTS_DESC:
     "Скрипты появляются здесь после того, как они запрашивают разрешение автоматически запускаться каждый раз при открытии нового рисунка Excalidraw (запрос инициируется однократным ручным запуском скрипта). Изменить настройку скрипта можно в любое время.",
-  AUTOSTART_SCRIPTS_EMPTY: "Ни один скрипт ещё не запрашивал разрешение на автозапуск.",
+  AUTOSTART_SCRIPTS_EMPTY:
+    "Ни один скрипт ещё не запрашивал разрешение на автозапуск.",
   AUTOSTART_SCRIPT_FAILED_WARNING:
     "Этот скрипт завершился ошибкой при последнем автозапуске.",
   ENABLE_COMMAND_LINKS_NAME: "Включить ссылки-команды (cmd://)",

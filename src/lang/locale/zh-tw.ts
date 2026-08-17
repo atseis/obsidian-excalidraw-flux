@@ -118,8 +118,7 @@ export default {
   MARKDOWN_IMAGE_WIDTH: "寬度",
   MARKDOWN_IMAGE_WIDTH_DESC: "以畫布單位表示的 Markdown 排版寬度",
   MARKDOWN_IMAGE_BOTTOM_PADDING: "底部內距",
-  MARKDOWN_IMAGE_BOTTOM_PADDING_DESC:
-    "算繪後的 Markdown 下方額外空間（像素）",
+  MARKDOWN_IMAGE_BOTTOM_PADDING_DESC: "算繪後的 Markdown 下方額外空間（像素）",
   MARKDOWN_IMAGE_FONT: "字型",
   MARKDOWN_IMAGE_FONT_COLOR: "字型顏色",
   MARKDOWN_IMAGE_BORDER: "邊框",
@@ -130,8 +129,7 @@ export default {
   MARKDOWN_IMAGE_CSS_IMPORTANT_HINT:
     "如果規則沒有作用，請在宣告中加入 !important。",
   MARKDOWN_IMAGE_CSS_EDITOR_ARIA: "此 Markdown 圖像的 CSS 編輯器",
-  MARKDOWN_IMAGE_TRANSCLUSION_CSS_EDITOR_ARIA:
-    "嵌入 Markdown 的 CSS 編輯器",
+  MARKDOWN_IMAGE_TRANSCLUSION_CSS_EDITOR_ARIA: "嵌入 Markdown 的 CSS 編輯器",
   MARKDOWN_IMAGE_INSERT_CSS_BOILERPLATE: "插入含註解的 CSS 範本",
   MARKDOWN_IMAGE_COPY_SVG: "複製目前 Markdown 圖像的 SVG",
   MARKDOWN_IMAGE_SVG_COPIED: "已複製 Markdown 圖像 SVG",
@@ -171,7 +169,8 @@ export default {
   MARKDOWN_IMAGE_CREATE_NOTE_ERROR: "無法建立 Markdown 筆記",
   MARKDOWN_IMAGE_UNKNOWN_ERROR: "未知錯誤",
   MARKDOWN_IMAGE_SOURCE_UNAVAILABLE: "Markdown 圖像來源無法使用。",
-  MARKDOWN_IMAGE_RESERVED_MARKER: "Markdown 內容包含保留的 Markdown 圖像標記行。",
+  MARKDOWN_IMAGE_RESERVED_MARKER:
+    "Markdown 內容包含保留的 Markdown 圖像標記行。",
   MARKDOWN_IMAGE_EMPTY_PLACEHOLDER: "開始在 Markdown 圖像編輯器中輸入…",
   MARKDOWN_IMAGE_NO_SELECTION: "選擇一個 Markdown 圖像進行編輯。",
   MARKDOWN_IMAGE_ATTACHED_TO: "附加到 {file}",
@@ -643,7 +642,7 @@ export default {
     "包括：左手模式、動態樣式、匹配 Excalidraw 和 Obsidian 主題、預設執行模式等。",
   TOOL_SHORTCUTS_HEAD: "工具快捷鍵別名",
   TOOL_SHORTCUTS_DESC:
-    "分別控制各工具的數字鍵和字母鍵。L 作為線條樣式入口：ls = 實線，ld = 虛線，lt = 點線，la = 直接將已選的虛線或點線轉為動態線條。A 作為 Arrowhead 端點樣式入口，第二鍵沿用原生 Arrowhead 選擇器中的字母：普通小寫字母修改終點，Shift+字母修改起點。例如 aq = 無，aw = 普通箭頭，ab = Block arrow，an = Block arrow outline。",
+    "分別控制各工具的數字鍵和字母鍵。L 調整線條樣式：ls = 實線，ld = 虛線，lt = 點線，la = 直接將已選虛線或點線轉為動態線條。C 調整連接模式：co = 關閉，cp = 點，ce = 邊。A 調整箭頭路徑類型：as = 直線，ac = 曲線，ae = 肘形，aa = 自動曲線。H 調整 Arrowhead 端點樣式，第二鍵沿用原生選擇器字母：小寫修改終點，Shift+第二鍵修改起點。Flux 將 H 專用於 Arrowheads，因此 Hand 不再使用 H 別名。S、G 分別開啟完整的線條色和背景色調色盤。B 啟用 Bucket Fill 並常駐開啟完整背景色調色盤，可連續換色和填充，按 Esc 才退出；面板會顯示各顏色對應的字母或標點，Shift+1…5 選擇深淺。",
   TOOL_SHORTCUTS_DIGIT: "數字",
   TOOL_SHORTCUTS_LETTER: "字母",
   TOOL_SHORTCUTS_ERASER: "橡皮擦",

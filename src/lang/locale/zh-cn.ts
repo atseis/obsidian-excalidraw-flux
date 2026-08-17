@@ -48,7 +48,8 @@ export default {
   LIBRARY_MIGRATION_FAILED: "无法移动素材库。原 data.json 素材库保持不变。",
   LIBRARY_FILE_READ_ERROR: "无法读取 Excalidraw 素材库文件：{PATH}",
   LIBRARY_STORAGE_NAME: "素材库存储位置",
-  LIBRARY_STORAGE_DESC: "将素材库移出 data.json 并使用仓库文件可提升保存稳定性。",
+  LIBRARY_STORAGE_DESC:
+    "将素材库移出 data.json 并使用仓库文件可提升保存稳定性。",
   LIBRARY_STORAGE_VAULT: "仓库文件夹（推荐）",
   LIBRARY_STORAGE_DATA_JSON: "插件 data.json（旧方式）",
   LIBRARY_FOLDER_NAME: "素材库文件夹",
@@ -118,8 +119,7 @@ export default {
   MARKDOWN_IMAGE_WIDTH: "宽度",
   MARKDOWN_IMAGE_WIDTH_DESC: "以画布单位表示的 Markdown 排版宽度",
   MARKDOWN_IMAGE_BOTTOM_PADDING: "底部内边距",
-  MARKDOWN_IMAGE_BOTTOM_PADDING_DESC:
-    "渲染后的 Markdown 下方额外空间（像素）",
+  MARKDOWN_IMAGE_BOTTOM_PADDING_DESC: "渲染后的 Markdown 下方额外空间（像素）",
   MARKDOWN_IMAGE_FONT: "字体",
   MARKDOWN_IMAGE_FONT_COLOR: "字体颜色",
   MARKDOWN_IMAGE_BORDER: "边框",
@@ -130,8 +130,7 @@ export default {
   MARKDOWN_IMAGE_CSS_IMPORTANT_HINT:
     "如果规则没有效果，请在声明中添加 !important。",
   MARKDOWN_IMAGE_CSS_EDITOR_ARIA: "此 Markdown 图像的 CSS 编辑器",
-  MARKDOWN_IMAGE_TRANSCLUSION_CSS_EDITOR_ARIA:
-    "嵌入 Markdown 的 CSS 编辑器",
+  MARKDOWN_IMAGE_TRANSCLUSION_CSS_EDITOR_ARIA: "嵌入 Markdown 的 CSS 编辑器",
   MARKDOWN_IMAGE_INSERT_CSS_BOILERPLATE: "插入带注释的 CSS 模板",
   MARKDOWN_IMAGE_COPY_SVG: "复制当前 Markdown 图像的 SVG",
   MARKDOWN_IMAGE_SVG_COPIED: "已复制 Markdown 图像 SVG",
@@ -171,7 +170,8 @@ export default {
   MARKDOWN_IMAGE_CREATE_NOTE_ERROR: "无法创建 Markdown 笔记",
   MARKDOWN_IMAGE_UNKNOWN_ERROR: "未知错误",
   MARKDOWN_IMAGE_SOURCE_UNAVAILABLE: "Markdown 图像来源不可用。",
-  MARKDOWN_IMAGE_RESERVED_MARKER: "Markdown 正文包含保留的 Markdown 图像标记行。",
+  MARKDOWN_IMAGE_RESERVED_MARKER:
+    "Markdown 正文包含保留的 Markdown 图像标记行。",
   MARKDOWN_IMAGE_EMPTY_PLACEHOLDER: "开始在 Markdown 图像编辑器中输入…",
   MARKDOWN_IMAGE_NO_SELECTION: "选择一个 Markdown 图像进行编辑。",
   MARKDOWN_IMAGE_ATTACHED_TO: "附加到 {file}",
@@ -643,7 +643,7 @@ export default {
     "包括：左手模式、动态样式、匹配 Excalidraw 和 Obsidian 主题、默认运行模式等。",
   TOOL_SHORTCUTS_HEAD: "工具快捷键别名",
   TOOL_SHORTCUTS_DESC:
-    "分别控制各工具的数字键和字母键。L 作为线条样式入口：ls = 实线，ld = 虚线，lt = 点线，la = 直接将已选的虚线或点线转为动态线条。A 作为 Arrowhead 端点样式入口，第二键沿用原生 Arrowhead 选择器中的字母：普通小写字母修改终点，Shift+字母修改起点。例如 aq = 无，aw = 普通箭头，ab = Block arrow，an = Block arrow outline。",
+    "分别控制各工具的数字键和字母键。L 调整线条样式：ls = 实线，ld = 虚线，lt = 点线，la = 直接将已选虚线或点线转为动态线条。C 调整连接模式：co = 关闭，cp = 点，ce = 边。A 调整箭头路径类型：as = 直线，ac = 曲线，ae = 肘形，aa = 自动曲线。H 调整 Arrowhead 端点样式，第二键沿用原生选择器字母：小写修改终点，Shift+第二键修改起点。Flux 将 H 专用于 Arrowheads，因此 Hand 不再使用 H 别名。S、G 分别打开完整的线条色和背景色调色盘。B 启用 Bucket Fill 并常驻打开完整背景色调色盘，可连续换色和填充，按 Esc 才退出；面板会显示各颜色对应的字母或标点，Shift+1…5 选择深浅。",
   TOOL_SHORTCUTS_DIGIT: "数字",
   TOOL_SHORTCUTS_LETTER: "字母",
   TOOL_SHORTCUTS_ERASER: "橡皮擦",
