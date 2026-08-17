@@ -307,7 +307,7 @@ export const addFiles = async (
   }
   const s = scaleLoadedImage(view.getScene(), files);
   if (isDark === undefined) {
-    isDark = s.scene.appState.theme;
+    isDark = s.scene.appState.theme === "dark";
   }
   // update element.crop naturalWidth and naturalHeight in case scale of PDF loading has changed
   // update crop.x crop.y, crop.width, crop.height according to the new scale
@@ -373,7 +373,18 @@ export const addFiles = async (
       view.excalidrawData.setEquation(f.id, { latex, isLoaded: true });
     }
   }
-  api.addFiles(files);
+  const skipSvgNormalization = new Set<FileId>();
+  for (const file of files) {
+    const sourceFile = view.excalidrawData.getFile(file.id)?.file;
+    if (
+      file.mimeType === "image/svg+xml" &&
+      sourceFile &&
+      view.plugin.isExcalidrawFile(sourceFile)
+    ) {
+      skipSvgNormalization.add(file.id);
+    }
+  }
+  api.addFiles({ files, skipSvgNormalization });
 };
 
 const warningUnknowSeriousError = () => {
@@ -1474,13 +1485,15 @@ export default class ExcalidrawView
     this.zoomToFit(false);
   }
 
-  excalidrawGetSceneVersion: (elements: ExcalidrawElement[]) => number;
+  excalidrawHashElementsVersion: (
+    elements: readonly ExcalidrawElement[],
+  ) => number;
   getSceneVersion(elements: readonly ExcalidrawElement[]): number {
-    if (!this.excalidrawGetSceneVersion) {
-      this.excalidrawGetSceneVersion =
-        this.packages.excalidrawLib.getSceneVersion;
+    if (!this.excalidrawHashElementsVersion) {
+      this.excalidrawHashElementsVersion =
+        this.packages.excalidrawLib.hashElementsVersion;
     }
-    return this.excalidrawGetSceneVersion(
+    return this.excalidrawHashElementsVersion(
       elements.filter((el) => !el.isDeleted),
     );
   }
@@ -1803,7 +1816,7 @@ export default class ExcalidrawView
     }
   }
 
-  public setTheme(theme: string) {
+  public setTheme(theme: "dark" | "light") {
     const api = this.excalidrawAPI;
     if (!api) {
       return;
@@ -2283,7 +2296,7 @@ export default class ExcalidrawView
     }
     const sceneElements = api.getSceneElements();
 
-    let elements = sceneElements.filter(
+    let elements: ExcalidrawElement[] = sceneElements.filter(
       (el: ExcalidrawElement) => el.id === id,
     );
     if (elements.length === 0) {
@@ -3830,8 +3843,8 @@ export default class ExcalidrawView
     } //the group had no text element member
 
     return {
-      id: selectedElement[0].id,
-      text: (selectedElement[0] as ExcalidrawTextElement).text,
+      id: textElement[0].id,
+      text: (textElement[0] as ExcalidrawTextElement).text,
     }; //return text element text
   }
 
@@ -3881,7 +3894,7 @@ export default class ExcalidrawView
     } //the group had no image element member
     return {
       id: imageElement[0].id,
-      fileId: imageElement[0].fileId,
+      fileId: (imageElement[0] as ExcalidrawImageElement).fileId,
     }; //return image element fileId
   }
 
@@ -4209,7 +4222,7 @@ export default class ExcalidrawView
 
     const newContainers = newElements.filter(isContainer);
     if (newContainers.length > 0) {
-      api.updateContainerSize(newContainers);
+      api.updateContainerSize(newContainers as NonDeletedExcalidrawElement[]);
       shouldRefreshArrows = true;
     }
     if (shouldRefreshArrows) {
@@ -4232,7 +4245,7 @@ export default class ExcalidrawView
       return null;
     }
     const el: readonly NonDeletedExcalidrawElement[] = selectedOnly
-      ? this.getViewSelectedElements()
+      ? (this.getViewSelectedElements() as NonDeletedExcalidrawElement[])
       : api.getSceneElements();
     const st: AppState = api.getAppState();
     const files = { ...api.getFiles() };
@@ -5309,7 +5322,7 @@ export default class ExcalidrawView
   }
 
   public async onThemeChange(newTheme: string) {
-    this.excalidrawData.scene.appState.theme = newTheme;
+    this.excalidrawData.scene.appState.theme = newTheme as "dark" | "light";
     await this.loadSceneFiles(true);
     this.toolsPanelRef?.current?.setTheme(newTheme as "dark" | "light");
     //Timeout is to allow appState to update

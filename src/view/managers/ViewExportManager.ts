@@ -240,7 +240,7 @@ export class ViewExportManager {
       skipInliningFonts: !embedFont,
     };
 
-    const exportTheme = this.getViewExportTheme(theme);
+    const exportTheme = this.getViewExportTheme(theme) as "dark" | "light";
     const overrideFiles = await this.loadFilesForExport(exportTheme);
 
     return await this.dependencies.getSVG(
@@ -428,7 +428,7 @@ export class ViewExportManager {
       ),
     };
 
-    const exportTheme = this.getViewExportTheme(theme);
+    const exportTheme = this.getViewExportTheme(theme) as "dark" | "light";
     const overrideFiles = await this.loadFilesForExport(exportTheme);
 
     return await this.dependencies.getPNG(
@@ -522,7 +522,7 @@ export class ViewExportManager {
       ),
     };
 
-    const exportTheme = this.getViewExportTheme(theme);
+    const exportTheme = this.getViewExportTheme(theme) as "dark" | "light";
     const overrideFiles = await this.loadFilesForExport(exportTheme);
 
     return await this.dependencies.getWebP(
@@ -675,7 +675,7 @@ export class ViewExportManager {
         ) => {
           if (files && files.length > 0) {
             files.forEach((f) => {
-              const fileId = f.id as unknown as FileId;
+              const fileId = f.id;
               collected[fileId] = { ...f };
             });
           }

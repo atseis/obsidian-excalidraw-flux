@@ -27,6 +27,7 @@ Excalidraw Flux is an independently maintained, upstream-syncable distribution o
 - Refactoring the plugin. Removed unused functions, improved code structure and readability. Removed the obsolete Draw.io/Diagram plugin integration (since the other plugin no longer works and is not maintained) and retired the Create DrawIO file script from the script library.
 - Migrated the embedded Excalidraw runtime from the retired UMD build path to a dedicated ESM-source-based Obsidian package while preserving offline operation, popout windows, and runtime Mermaid loading through Excalidraw Extras. The Assistant UI font is now bundled instead of fetched from the internet, and the plugin-private React runtime is generated from the official npm package entrypoints instead of legacy UMD files.
 - Updated the plugin-private React and ReactDOM runtime to React 19.
+- Improved loading performance for drawings with many cached embedded files by avoiding large cache rewrites, SVG reconstruction, unnecessary image measurement and hashing, premature cache-read timeouts, and duplicate SVG normalization when cached drawings are handed to the canvas. Cached and direct images now appear before uncached generated drawings. The disposable image cache is rebuilt once after updating; drawing backups are preserved.
 
 ## Fixed
 - Restored the legacy Excalidraw scripting method \`api.scrollToContent(target?, options?)\` as a compatibility adapter over the current \`api.setViewport()\` API. The adapter is now also installed whenever Excalidraw Automate returns a view API, covering API-reference replacement after view initialization. Mind Map Builder detects the available viewport method directly instead of inferring it from custom plugin version strings.
@@ -42,6 +43,15 @@ Excalidraw Flux is an independently maintained, upstream-syncable distribution o
 - Respect box selection mode ('contain' vs 'overlap') in lasso selection [#11862](${URLs.GITHUB_COM_EXCALIDRAW_EXCALIDRAW_PULL}/11862)
 - Color-picker top picks can now be customized by dragging a color from the palette onto the strip; right-click the strip to reset [#11872](${URLs.GITHUB_COM_EXCALIDRAW_EXCALIDRAW_PULL}/11872)
 
+## New in Excalidraw Automate
+- Scripts can now register custom buttons in the selected-element context menu (the small toolbar shown above a selected element):
+\`\`\`ts
+registerElementActionProvider(getActions: (element: ExcalidrawElement) => readonly {id: string, title: string, icon: string, action: () => void}[]): (() => void) | null;
+\`\`\`
+- Scripts can now ask to be automatically re-run every time a new Excalidraw view is opened, with a user-confirmed Allow/Deny/Ask-me-later prompt; a fresh Allow also attaches the script to every other currently-open view immediately. Manage which scripts are allowed to autostart from the "Autostart scripts" command or the Compatibility settings section:
+\`\`\`ts
+registerAutostart(): Promise<"allow" | "deny" | "pending">;
+\`\`\`
 `,
   "2.26.4": `
 ## Fixed
