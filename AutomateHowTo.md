@@ -320,6 +320,12 @@ async createPNG(templatePath?:string)
 ```
 Returns a blob containing a PNG image of the generated drawing.
 
+### createWebP()
+```typescript
+async createWebP(templatePath?: string, scale?: number, exportSettings?: ExportSettings, loader?: EmbeddedFilesLoader, theme?: string, padding?: number, quality?: number)
+```
+Returns a blob containing a native WebP image of the generated drawing. Omitted export settings and quality use the current plugin configuration.
+
 ## Examples
 ### Insert new drawing into currently edited document
 This template will prompt you for the title of the drawing. It will create a new drawing with the provided title, and in the folder of the document you were editing. It will then transclude the new drawing at the cursor location and open the new drawing in a new workspace leaf by splitting the current leaf.

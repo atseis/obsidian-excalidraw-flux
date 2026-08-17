@@ -343,6 +343,12 @@ export const EXCALIDRAW_AUTOMATE_INFO: SuggesterInfo[] = [
     after: "",
   },
   {
+    field: "createWebP",
+    code: "async createWebP(templatePath?: string, scale?: number, exportSettings?: ExportSettings, loader?: EmbeddedFilesLoader, theme?: string, padding?: number, quality?: number): Promise<Blob>;",
+    desc: "Create a native WebP image based on the objects in ea.getElements() and an optional Excalidraw template. Omitted export settings and quality use the current plugin configuration.",
+    after: "",
+  },
+  {
     field: "createPNGBase64",
     code: "async craetePNGBase64(templatePath?: string, scale?: number, exportSettings?: ExportSettings, loader?: EmbeddedFilesLoader, theme?: string,padding?: number): Promise<string>;",
     desc: "The same as createPNG but returns a base64 encoded string instead of a file.",

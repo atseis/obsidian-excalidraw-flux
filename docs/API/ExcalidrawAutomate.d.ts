@@ -396,6 +396,11 @@ export declare class ExcalidrawAutomate {
      */
     createPNG(templatePath?: string, scale?: number, exportSettings?: ExportSettings, loader?: EmbeddedFilesLoader, theme?: string, padding?: number): Promise<any>;
     /**
+     * Creates a WebP image from the Excalidraw Automate elements and an optional template file.
+     * Omitted export settings and quality use the current plugin configuration.
+     */
+    createWebP(templatePath?: string, scale?: number, exportSettings?: ExportSettings, loader?: EmbeddedFilesLoader, theme?: string, padding?: number, quality?: number): Promise<Blob>;
+    /**
      * Wrapper for createPNG() that returns a base64 encoded string designed to support LLM workflows.
      * @param {string} [templatePath] - The template path to use for the PNG.
      * @param {number} [scale=1] - The scale factor for the PNG.

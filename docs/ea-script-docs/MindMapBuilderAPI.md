@@ -130,7 +130,7 @@ Re-runs map layout for a selected or provided node.
 
 ### Create / import / export
 
-#### `addNode({ text, parentId?, ontology?, follow?, position? }): Promise<MMResult<{ nodeId; arrowId; rootId }>>`
+#### `addNode({ text, parentId?, ontology?, follow?, position?: { x: number; y: number } }): Promise<MMResult<{ nodeId; arrowId; rootId }>>`
 Adds a node using existing mindmap insertion logic.
 
 #### `importMarkdown({ markdown, parentId? }): Promise<MMResult<{ addedNodeIds: string[]; rootId: string | null }>>`

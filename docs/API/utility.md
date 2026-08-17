@@ -82,6 +82,12 @@ async createPNG(templatePath?:string, scale:number=1)
 ```
 Returns a blob containing a PNG image of the generated drawing.
 
+### createWebP()
+```typescript
+async createWebP(templatePath?: string, scale:number=1, exportSettings?: ExportSettings, loader?: EmbeddedFilesLoader, theme?: string, padding?: number, quality?: number)
+```
+Returns a blob containing a native WebP image. Omitted export settings and quality use the current plugin configuration.
+
 ### wrapText()
 ```typescript
 wrapText(text:string, lineLen:number):string

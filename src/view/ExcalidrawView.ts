@@ -272,6 +272,7 @@ import { getYouTubeUrl, URLs } from "src/constants/safeUrls";
 import { setStyle } from "src/utils/styleUtils";
 import { isInstanceOfHTMLElement } from "src/utils/typechecks";
 import { setElementDisplay } from "src/utils/htmlUtils";
+import { installLegacyScrollToContentCompatibility } from "src/utils/excalidrawAPICompatibility";
 
 const EMBEDDABLE_SEMAPHORE_TIMEOUT = 2000;
 const PREVENT_RELOAD_TIMEOUT = 2000;
@@ -6500,7 +6501,9 @@ export default class ExcalidrawView
   }
 
   public setExcalidrawAPI(api: ExcalidrawImperativeAPI | null) {
-    this.excalidrawAPI = api;
+    this.excalidrawAPI = api
+      ? installLegacyScrollToContentCompatibility(api)
+      : null;
     // Chasing ghosts: https://github.com/zsviczian/obsidian-excalidraw-plugin/issues/2810
     if (!api || this.pendingUIMode === null) {
       return;

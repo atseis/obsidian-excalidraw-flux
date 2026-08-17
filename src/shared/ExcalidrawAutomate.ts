@@ -157,6 +157,7 @@ import {
   cloneElement,
   createPNG,
   createSVG,
+  createWebP,
   ensureActiveScriptSettingsObject,
   errorMessage,
   filterColorMap,
@@ -185,6 +186,7 @@ import { parser as mathParser } from "./Dialogs/math-only";
 type MutableElementMapEntry = Mutable<ExcalidrawElement> &
   Record<string, unknown>;
 import { getLastActiveExcalidrawView } from "src/utils/excalidrawViewLookup";
+import { installLegacyScrollToContentCompatibility } from "src/utils/excalidrawAPICompatibility";
 import {
   exportToPDF,
   getMarginValue,
@@ -1847,6 +1849,68 @@ export class ExcalidrawAutomate {
   }
 
   /**
+   * Creates a WebP image from the Excalidraw Automate elements and an optional
+   * template file using the plugin's native browser WebP encoder.
+   *
+   * @param templatePath - Optional Excalidraw template path.
+   * @param scale - Raster export scale.
+   * @param exportSettings - Optional export settings; plugin defaults are used when omitted.
+   * @param loader - Optional embedded-file loader.
+   * @param theme - Optional light or dark theme override.
+   * @param padding - Optional export padding.
+   * @param quality - Optional WebP quality; defaults to the plugin setting.
+   * @returns A locally encoded WebP blob.
+   */
+  async createWebP(
+    templatePath?: string,
+    scale: number = 1,
+    exportSettings?: ExportSettings,
+    loader?: EmbeddedFilesLoader,
+    theme?: string,
+    padding?: number,
+    quality: number = this.plugin.settings.webpExportQuality,
+  ): Promise<Blob> {
+    if (!theme) {
+      theme = this.plugin.settings.previewMatchObsidianTheme
+        ? isObsidianThemeDark()
+          ? "dark"
+          : "light"
+        : !this.plugin.settings.exportWithTheme
+          ? "light"
+          : undefined;
+    }
+    if (theme && !exportSettings) {
+      exportSettings = {
+        withBackground: this.plugin.settings.exportWithBackground,
+        withTheme: true,
+        isMask: false,
+      };
+    }
+    if (!loader) {
+      loader = new EmbeddedFilesLoader(
+        this.plugin,
+        theme ? theme === "dark" : undefined,
+      );
+    }
+
+    return await createWebP(
+      templatePath,
+      scale,
+      exportSettings,
+      loader,
+      theme,
+      this.canvas.theme,
+      this.canvas.viewBackgroundColor,
+      this.getElements(),
+      this.plugin,
+      0,
+      padding,
+      this.imagesDict,
+      quality,
+    );
+  }
+
+  /**
    * Wrapper for createPNG() that returns a base64 encoded string designed to support LLM workflows.
    * @param {string} [templatePath] - The template path to use for the PNG.
    * @param {number} [scale=1] - The scale factor for the PNG.
@@ -3202,7 +3266,8 @@ export class ExcalidrawAutomate {
       errorMessage("targetView not set", "getExcalidrawAPI()");
       return null;
     }
-    return this.targetView.excalidrawAPI;
+    const api = this.targetView.excalidrawAPI;
+    return api ? installLegacyScrollToContentCompatibility(api) : null;
   }
 
   /**

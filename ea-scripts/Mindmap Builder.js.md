@@ -3381,23 +3381,19 @@ const zoomToFit = (mode) => {
     
     const targetZoom = getZoom(nextLevel);
     
-    // Fallback for older versions vs new Excalidraw 2.26.0+ Viewport API
-    if (!ea.verifyMinimumPluginVersion("2.26.0")) {
-      api().scrollToContent([sel], {
-        fitToViewport: true,
-        viewportZoomFactor: targetZoom,
-        animate: true
-      });
-    } else {
-      // For the new API, we calculate a target rect centered on the element 
-      // with dimensions that will force 'fit: "contain"' to reach our target zoom.
-      const appState = api().getAppState();
+    // Prefer capability detection because custom plugin version strings and
+    // compatibility builds do not always map cleanly to feature availability.
+    const viewportAPI = api();
+    if (typeof viewportAPI?.setViewport === "function") {
+      // For the new API, calculate a target rect centered on the element with
+      // dimensions that force `fit: "contain"` to reach the requested zoom.
+      const appState = viewportAPI.getAppState();
       const targetW = appState.width / targetZoom;
       const targetH = appState.height / targetZoom;
       const cx = sel.x + sel.width / 2;
       const cy = sel.y + sel.height / 2;
-      
-      api().setViewport({
+
+      viewportAPI.setViewport({
         target: {
           x: cx - targetW / 2,
           y: cy - targetH / 2,
@@ -3406,6 +3402,12 @@ const zoomToFit = (mode) => {
         },
         fit: "contain",
         animation: true
+      });
+    } else if (typeof viewportAPI?.scrollToContent === "function") {
+      viewportAPI.scrollToContent([sel], {
+        fitToViewport: true,
+        viewportZoomFactor: targetZoom,
+        animate: true
       });
     }
   }
@@ -3436,18 +3438,20 @@ const focusSelected = () => {
 
   if (!sel) return;
 
-  // Fallback for older versions vs new Excalidraw 2.26.0+ Viewport API
-  if (!ea.verifyMinimumPluginVersion("2.26.0")) {
-    api().scrollToContent(sel, {
-      fitToContent: false,
-      animate: true,
-    });
-  } else {
+  // Prefer the API that is actually available instead of inferring it from a
+  // plugin version string supplied by an official or custom distribution.
+  const viewportAPI = api();
+  if (typeof viewportAPI?.setViewport === "function") {
     // fit: "none" recenters at the current zoom without changing it
-    api().setViewport({
+    viewportAPI.setViewport({
       target: [sel],
       fit: "none",
       animation: true
+    });
+  } else if (typeof viewportAPI?.scrollToContent === "function") {
+    viewportAPI.scrollToContent(sel, {
+      fitToContent: false,
+      animate: true,
     });
   }
 };
@@ -12935,7 +12939,7 @@ const performAction = async (action, event) => {
         },
         {
           name: "position",
-          type: "string",
+          type: "object",
           required: false
         },
       ],

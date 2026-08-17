@@ -34,6 +34,7 @@ import {
   getLinkParts,
   getPNG,
   getSVG,
+  getWebP,
   isVersionNewerThanOther,
   scaleLoadedImage,
 } from "src/utils/utils";
@@ -573,6 +574,98 @@ export async function createPNG(
     },
     padding,
     scale,
+    overrideFiles,
+    filenameParts.padding !== undefined,
+  );
+}
+
+/**
+ * Creates a WebP image from an optional Excalidraw template and the supplied
+ * Excalidraw Automate elements.
+ *
+ * @param templatePath - Optional Excalidraw file used as the base scene.
+ * @param scale - Raster export scale.
+ * @param exportSettings - Background, theme, mask, and frame settings.
+ * @param loader - Embedded-file loader used while resolving the template.
+ * @param forceTheme - Optional light or dark theme override.
+ * @param canvasTheme - Fallback theme for scenes without a template theme.
+ * @param canvasBackgroundColor - Fallback scene background color.
+ * @param automateElements - Additional elements to merge into the template.
+ * @param plugin - Owning Excalidraw plugin instance.
+ * @param depth - Nested-template loading depth.
+ * @param padding - Optional raster export padding.
+ * @param imagesDict - Additional binary files referenced by automate elements.
+ * @param quality - WebP encoder quality; defaults to the plugin setting.
+ * @param overrideFiles - Binary files that override scene file entries.
+ * @returns A locally encoded WebP blob.
+ */
+export async function createWebP(
+  templatePath: string = undefined,
+  scale: number = 1,
+  exportSettings: ExportSettings,
+  loader: EmbeddedFilesLoader,
+  forceTheme: string = undefined,
+  canvasTheme: string = undefined,
+  canvasBackgroundColor: string = undefined,
+  automateElements: ExcalidrawElement[] = [],
+  plugin: ExcalidrawPlugin,
+  depth: number,
+  padding?: number,
+  imagesDict?: Record<ExcalidrawElement["id"], BinaryFileData>,
+  quality: number = plugin.settings.webpExportQuality,
+  overrideFiles?: Record<ExcalidrawElement["id"], BinaryFileData>,
+): Promise<Blob> {
+  if (!loader) {
+    loader = new EmbeddedFilesLoader(plugin);
+  }
+  const filenameParts = getEmbeddedFilenameParts(templatePath);
+  padding = filenameParts.padding ?? padding ?? plugin.settings.exportPaddingSVG;
+  const template = templatePath
+    ? await getTemplate(plugin, templatePath, true, loader, depth)
+    : null;
+  let elements = template?.elements ?? [];
+  elements = elements.concat(automateElements);
+  const files = imagesDict ?? {};
+  if (template?.files) {
+    Object.values(template.files).forEach((file: BinaryFileData) => {
+      if (!file.dataURL.startsWith("http")) {
+        files[file.id as string] = file;
+      }
+    });
+  }
+  const resolvedTheme = (forceTheme ??
+    template?.appState?.theme ??
+    canvasTheme ??
+    "light") as "light" | "dark";
+
+  return await getWebP(
+    {
+      type: "excalidraw",
+      version: 2,
+      source: `${URLs.GITHUB_COM_ZSVICZIAN_OBSIDIAN_EXCALIDRAW_PLUGIN_RELEASES_TAG}/${PLUGIN_VERSION}`,
+      elements,
+      appState: {
+        theme: resolvedTheme,
+        viewBackgroundColor:
+          template?.appState?.viewBackgroundColor ?? canvasBackgroundColor,
+        ...(template?.appState?.frameRendering
+          ? { frameRendering: template.appState.frameRendering }
+          : {}),
+      },
+      files,
+    },
+    {
+      withBackground:
+        exportSettings?.withBackground ?? plugin.settings.exportWithBackground,
+      withTheme: exportSettings?.withTheme ?? plugin.settings.exportWithTheme,
+      isMask: exportSettings?.isMask ?? false,
+      ...(exportSettings?.frameRendering
+        ? { frameRendering: exportSettings.frameRendering }
+        : {}),
+    },
+    padding,
+    scale,
+    quality,
     overrideFiles,
     filenameParts.padding !== undefined,
   );

@@ -18,6 +18,7 @@ Excalidraw Flux is an independently maintained, upstream-syncable distribution o
   "2.27.0": `
 ## New in Excalidraw Flux
 - Added native WebP auto-export with a configurable quality setting. WebP participates in dark/light variants, export path hooks, and same-name rename/delete synchronization; per-file frontmatter accepts \`webp\` and \`all\`.
+- Added \`ea.createWebP(templatePath?, scale?, exportSettings?, loader?, theme?, padding?, quality?)\` so vault scripts can batch-render existing drawings through the same native WebP encoder without opening and resaving every drawing.
 - The line-style selector now uses \`L\`: \`ls\` = solid, \`ld\` = dashed, \`lt\` = dotted, and \`la\` immediately applies the matching dash animation without opening the advanced script dialog. The original **add animation for line** Action remains available for custom parameters.
 - \`A\` now opens the Arrowhead selector using the native picker letters. A lowercase second key changes the end Arrowhead; Shift+the second key changes the start. Examples: \`aq\` = None, \`aw\` = Arrow, \`ab\` = Block arrow, and \`an\` = Block arrow outline. Arrow path selection remains available in the properties panel.
 - Stroke and background color pickers add Navy (\`n\`), Lime (\`l\`), Mint (\`m\`), Olive (\`o\`), and Plum (\`p\`), including the existing Shift+1…5 shade controls.
@@ -28,6 +29,8 @@ Excalidraw Flux is an independently maintained, upstream-syncable distribution o
 - Updated the plugin-private React and ReactDOM runtime to React 19.
 
 ## Fixed
+- Restored the legacy Excalidraw scripting method \`api.scrollToContent(target?, options?)\` as a compatibility adapter over the current \`api.setViewport()\` API. The adapter is now also installed whenever Excalidraw Automate returns a view API, covering API-reference replacement after view initialization. Mind Map Builder detects the available viewport method directly instead of inferring it from custom plugin version strings.
+- Updated the bundled Mind Map Builder source so its API validator accepts the supported \`position: { x, y }\` argument, and fixed Select Similar Elements so a first-run search covers the full scene while its two-stage scoped search remains restricted to the chosen selection.
 - The Excalidraw color palette now uses its natural height when space is available instead of being unnecessarily limited to a short, vertically scrolling panel. Its native color control also remains aligned with the hex input.
 - The text-to-diagram chat history menu is visible again, allowing saved chats to be restored and deleted.
 - Stencil library is persisted with tab-indented JSON to support Git diffs. [#2883](${URLs.GITHUB_COM_ZSVICZIAN_OBSIDIAN_EXCALIDRAW_PLUGIN_ISSUES}/2883)

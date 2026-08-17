@@ -56,7 +56,12 @@ function lc(x) {
 // RUN
 //--------------------------
 const run = () => {
-  selectedElements = elements.filter(el=>
+  // On the first run, the selected element is the reference and the whole
+  // scene is the search scope. A valid saved config marks the second-stage
+  // "SELECT" workflow, where the current selection is intentionally the
+  // restricted scope.
+  const scopeElements = isValidConfig ? elements : ea.getViewElements();
+  selectedElements = scopeElements.filter(el=>
     ((typeof config.angle === "undefined") || (el.angle === config.angle)) &&
     ((typeof config.backgroundColor === "undefined") || (lc(el.backgroundColor) === lc(config.backgroundColor))) &&
     ((typeof config.fillStyle === "undefined") || (el.fillStyle === config.fillStyle)) &&
