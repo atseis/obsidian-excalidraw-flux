@@ -11,7 +11,7 @@ jobs:
     name: Create Release and Attest Assets
     runs-on: ubuntu-latest
     env:
-      FLUX_CORE_COMMIT: a0ed5c41ae2f20832f6bdea5020aca0b11ce6b96
+      FLUX_CORE_COMMIT: 98ae72f151194fd5912f3bb0e5d01b5dfe9cf525
 
     # CRITICAL: Give GitHub the required permissions to sign your files
     permissions:
